@@ -1,7 +1,9 @@
 <template>
     <v-layout row wrap class="messenger">
       <v-flex xs8>
-        <v-list three-line class="messenger-messages">
+        <v-list three-line
+        v-scroll:#messages="onMessagesScroll"
+        class="messenger-messages" id="messages" ref="messages">
           <template v-for="(message, i) in conversation.messages.slice(messagesOffset, messagesOffset+messagesCount)">
             <v-list-tile
               :key="i"
@@ -107,6 +109,13 @@ import loadConversationFromFile from '@/api/loadConversationFromFile'
     getImgPath(uri) {
       return this.filepath + uri;
     },
+    onMessagesScroll (e) {
+      // console.log(e.target.scrollTop + " vs " + this.$refs.messages.$el.clientHeight)
+      
+      if(e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight) {
+        this.messagesCount += 10;
+      }
+      },
      /**
       * @param timestamp in seconds
       * @return {String} date string in own format
@@ -121,6 +130,7 @@ import loadConversationFromFile from '@/api/loadConversationFromFile'
      /**
       * calls LoadConversationFromFile method to select a file
       * loads Message objects to conversation data
+      * Reverse the order so that older messages are shown first
       * loads Participant objects to conversation data
       */
      loadConversation() {
@@ -129,7 +139,10 @@ import loadConversationFromFile from '@/api/loadConversationFromFile'
          this.filepath = filepath
 
           this.conversation.messages = []
-          conv.messages.forEach((message)=>{
+          conv
+          .messages
+          .reverse()
+          .forEach((message)=>{
             this.conversation.messages.push({
               content: message.content,
               sender_name: message.sender_name,
