@@ -6,8 +6,8 @@ const { dialog } = require("electron").remote;
  * @param {function(JSON)} cb A callback that takes read file in JSON
  */
 const loadConversationFromFile = cb => {
-  readFile(data => {
-    cb(JSON.parse(data));
+  readFile((data, filepath) => {
+    cb(JSON.parse(data), filepath);
   });
 };
 
@@ -30,8 +30,11 @@ const readFile = cb => {
 
         cb(null);
       }
-      console.log(data);
-      cb(data);
+      /// TODO : extract path correctly
+      let pathRegex = /(.)*\\messages\\/i;
+      filepath = filepath.match(pathRegex)[0];
+      filepath = filepath.slice(0, -9); // 9 is "messages/".length, since URIs start with 'messages/'
+      cb(data, filepath);
     });
   });
 };
