@@ -1,68 +1,59 @@
 <template>
-    <v-layout row wrap class="messenger">
-      <v-flex xs8>
-        <v-list three-line
-        v-scroll:#messages="onMessagesScroll"
-        class="messenger-messages" id="messages" ref="messages">
-          <template v-for="(message, i) in conversation.messages.slice(messagesOffset, messagesOffset+messagesCount)">
-            <v-list-tile
-              :key="i"
-              avatar
-              @click="1"
-              class="message"
-            >
-              <!-- <v-list-tile-action>
-                <v-icon color="yellow">star</v-icon>
-              </v-list-tile-action> -->
-
-              <v-list-tile-avatar>
-                <img :src="conversation.participants[0].avatar">
-              </v-list-tile-avatar>
-
-              <v-list-tile-content>
-                <v-list-tile-title 
-                class="message-sender"
-                v-html='((message.sender_name) || DEFAULT.SENDER_NAME) + ` <span class="grey--text text--lighten-1">${message.timestamp}</span>`'></v-list-tile-title>
-                <v-list-tile-sub-title class="white--text message-content" v-html='message.content'></v-list-tile-sub-title>
-                
-              </v-list-tile-content>
-            </v-list-tile>
-              <v-layout justify-center :key='"photo" + i' v-if='message.photos'>
-                <img :src='getImgPath(message.photos[0].uri)' alt="Photo">
-              </v-layout>
-          </template>
-          <v-list-tile>
-            <v-list-tile-content>
-              <v-list-tile-title @click='messagesCount+=10'>Charger la suite</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </v-flex>
-      <v-flex xs4 class="messenger-controls">
-        <v-btn @click='loadConversation'>load Conversation</v-btn>
-        <v-list subheader>
-          <v-subheader>Participants</v-subheader>
+  <v-layout row wrap class="messenger">
+    <v-flex xs8>
+      <v-list three-line
+              v-scroll:#messages="onMessagesScroll"
+              class="messenger-messages" id="messages" ref="messages">
+        <template v-for="(message, i) in shownConversation.messages">
           <v-list-tile
-            v-for="(participant, i) in conversation.participants"
             :key="i"
             avatar
             @click="1"
-          >
+            class="message">
             <v-list-tile-avatar>
-              <img :src="participant.avatar">
+              <img :src="conversation.participants[0].avatar">
             </v-list-tile-avatar>
-
             <v-list-tile-content>
-              <v-list-tile-title v-html='participant.name'></v-list-tile-title>
+              <v-list-tile-title 
+              class="message-sender"
+              v-html='((message.sender_name) || DEFAULT.SENDER_NAME) + ` <span class="grey--text text--lighten-1">${message.timestamp}</span>`'></v-list-tile-title>
+              <v-list-tile-sub-title class="white--text message-content" v-html='message.content'></v-list-tile-sub-title>
+              
             </v-list-tile-content>
-
-            <!-- <v-list-tile-action>
-              <v-icon :color="item.active ? 'teal' : 'grey'">chat_bubble</v-icon>
-            </v-list-tile-action> -->
           </v-list-tile>
-        </v-list>
-      </v-flex>
-    </v-layout>
+          <v-layout justify-center :key='"photo" + i' v-if='message.photos'>
+            <img :src='getImgPath(message.photos[0].uri)' alt="Photo">
+          </v-layout>
+        </template>
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title @click='loadMoreMessages'>Charger la suite</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+    </v-flex>
+    <v-flex xs4 class="messenger-controls">
+      <v-btn @click='loadConversation'>load Conversation</v-btn>
+      <v-list subheader>
+        <v-subheader>Participants</v-subheader>
+        <v-list-tile
+          v-for="(participant, i) in conversation.participants"
+          :key="i"
+          avatar
+          @click="1"
+        >
+          <v-list-tile-avatar>
+            <img :src="participant.avatar">
+          </v-list-tile-avatar>
+
+          <v-list-tile-content>
+            <v-list-tile-title v-html='participant.name'></v-list-tile-title>
+          </v-list-tile-content>
+
+        </v-list-tile>
+      </v-list>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
@@ -77,7 +68,10 @@ import loadConversationFromFile from '@/api/loadConversationFromFile'
        },
        filepath: "/",
        messagesOffset: 0,
-       messagesCount: 50,
+       messagesCount: 30,
+       shownConversation: {
+         messages: []
+       },
        conversation: {
          messages: [
            {
@@ -106,15 +100,29 @@ import loadConversationFromFile from '@/api/loadConversationFromFile'
      }
    },
    methods: {
+     /**
+      * 
+      */
     getImgPath(uri) {
       return this.filepath + uri;
     },
+    /**
+     * 
+     */
+    loadMoreMessages() {
+      const LOAD_STEP = 10; // how many message to load each time
+      let lastMessageIndex = this.messagesOffset+this.messagesCount
+      let newMessages = this.conversation.messages.slice(lastMessageIndex, lastMessageIndex+LOAD_STEP)
+      this.shownConversation.messages = this.shownConversation.messages.concat(newMessages)
+      this.messagesCount += LOAD_STEP;
+    },
+    /**
+     * 
+     */
     onMessagesScroll (e) {
-      // console.log(e.target.scrollTop + " vs " + this.$refs.messages.$el.clientHeight)
-      
-      if(e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight) {
-        this.messagesCount += 10;
-      }
+        if(e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight) {
+          this.loadMoreMessages()
+        }
       },
      /**
       * @param timestamp in seconds
@@ -138,6 +146,7 @@ import loadConversationFromFile from '@/api/loadConversationFromFile'
          if(conv == null) return;
          this.filepath = filepath
 
+          /* Load messages */
           this.conversation.messages = []
           conv
           .messages
@@ -150,6 +159,8 @@ import loadConversationFromFile from '@/api/loadConversationFromFile'
               photos: message.photos
             })
           })
+          
+          /* Load participants */
           this.conversation.participants = []
           conv.participants.forEach((name) => {
             this.conversation.participants.push({
@@ -157,7 +168,9 @@ import loadConversationFromFile from '@/api/loadConversationFromFile'
               avatar: this.DEFAULT.AVATAR
             })
           })
-          console.log(this.conversation)
+          
+          this.shownConversation.messages = this.conversation.messages.slice(0, this.messagesCount)
+          this.loadMoreMessages()
        })
      }
    }
