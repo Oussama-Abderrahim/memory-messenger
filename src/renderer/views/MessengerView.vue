@@ -16,7 +16,7 @@
             <v-list-tile-content>
               <v-list-tile-title 
               class="message-sender"
-              v-html='((message.sender_name) || DEFAULT.SENDER_NAME) + ` <span class="grey--text text--lighten-1">${message.timestamp}</span>`'></v-list-tile-title>
+              v-html='getSenderNameHTML(message.sender_name, message.timestamp)'></v-list-tile-title>
               <v-list-tile-sub-title class="white--text message-content" v-html='message.content'></v-list-tile-sub-title>
               
             </v-list-tile-content>
@@ -40,8 +40,7 @@
           v-for="(participant, i) in conversation.participants"
           :key="i"
           avatar
-          @click="1"
-        >
+          @click="1">
           <v-list-tile-avatar>
             <img :src="participant.avatar">
           </v-list-tile-avatar>
@@ -73,33 +72,16 @@ import loadConversationFromFile from '@/api/loadConversationFromFile'
          messages: []
        },
        conversation: {
-         messages: [
-           {
-             content: 'Hello',
-             sender_name: 'Ouss',
-             timestamp: this.formatDate(1522318931),
-             photos: [
-             {
-                "uri": "messages/402249d082/photos/29663503_1607356376022328_1935282435_n_1607356376022328.png"
-             }
-             ]
-           },
-           {
-             content: 'Hello',
-             sender_name: 'Not Ouss',
-             timestamp: this.formatDate(1522318932)
-           },
-         ],
-         participants: [{
-           avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'
-         },
-         {
-           avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'
-         }]
+         title: '',
+         messages: [],
+         participants: []
        }
      }
    },
    methods: {
+    getSenderNameHTML(sender_name, timestamp) {
+      return ((sender_name) || this.DEFAULT.SENDER_NAME) + ` <span class="grey--text text--lighten-1">${this.formatDate(timestamp)}</span>`
+    },
      /**
       * 
       */
@@ -142,7 +124,10 @@ import loadConversationFromFile from '@/api/loadConversationFromFile'
       * loads Participant objects to conversation data
       */
      loadConversation() {
+       this.messagesCount = 30
+       this.messagesOffset = 0
        loadConversationFromFile((conv, filepath) => {
+         console.log(conv)
          if(conv == null) return;
          this.filepath = filepath
 
@@ -155,7 +140,7 @@ import loadConversationFromFile from '@/api/loadConversationFromFile'
             this.conversation.messages.push({
               content: message.content,
               sender_name: message.sender_name,
-              timestamp: this.formatDate(message.timestamp),
+              timestamp: message.timestamp,
               photos: message.photos
             })
           })
