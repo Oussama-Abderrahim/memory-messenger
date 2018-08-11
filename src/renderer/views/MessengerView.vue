@@ -77,9 +77,9 @@ import Vuex from 'vuex'
      }
    },
    computed: {
-      ...Vuex.mapGetters([
-        'conversation'
-      ]),
+      ...Vuex.mapGetters({
+        conversation: 'currentConversation'
+      }),
    },
    methods: {
      ...Vuex.mapActions([

@@ -6,23 +6,30 @@ Vue.use(Vuex);
 const state = {
   DEFAULT: {
     SENDER_NAME: "utilisateur",
-    AVATAR: "https://cdn.vuetifyjs.com/images/lists/2.jpg"
+    AVATAR: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
+    CONV: {
+      title: "",
+      messages: [],
+      participants: []
+    }
   },
-  conversation: {
-    title: "",
-    messages: [],
-    participants: []
-  }
+  currentIndex: -1,
+  conversations: []
 };
 
 const mutations = {
   ADD_CONV: (state, conversation) => {
-    state.conversation = conversation;
+    state.currentIndex++;
+    state.conversations.push(conversation);
   }
 };
 
 const getters = {
-  conversation: state => state.conversation
+  currentConversation: state =>
+    state.conversations.length > 0
+      ? state.conversations[state.currentIndex]
+      : state.DEFAULT.CONV,
+  conversations: state => state.conversations
 };
 
 const actions = {
