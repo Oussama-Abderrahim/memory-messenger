@@ -57,8 +57,11 @@
 
 <script>
 import loadConversationFromFile from '@/api/loadConversationFromFile'
+import store from '@/stores/conversationsStore'
+import Vuex from 'vuex'
 
  export default {
+   store,
    data() {
      return {
        DEFAULT: {
@@ -71,14 +74,17 @@ import loadConversationFromFile from '@/api/loadConversationFromFile'
        shownConversation: {
          messages: []
        },
-       conversation: {
-         title: '',
-         messages: [],
-         participants: []
-       }
      }
    },
+   computed: {
+      ...Vuex.mapGetters([
+        'conversation'
+      ]),
+   },
    methods: {
+     ...Vuex.mapActions([
+       'addConversation'
+     ]),
     getSenderNameHTML(sender_name, timestamp) {
       return ((sender_name) || this.DEFAULT.SENDER_NAME) + ` <span class="grey--text text--lighten-1">${this.formatDate(timestamp)}</span>`
     },
@@ -130,32 +136,9 @@ import loadConversationFromFile from '@/api/loadConversationFromFile'
          console.log(conv)
          if(conv == null) return;
          this.filepath = filepath
-
-          /* Load messages */
-          this.conversation.messages = []
-          conv
-          .messages
-          .reverse()
-          .forEach((message)=>{
-            this.conversation.messages.push({
-              content: message.content,
-              sender_name: message.sender_name,
-              timestamp: message.timestamp,
-              photos: message.photos
-            })
-          })
-          
-          /* Load participants */
-          this.conversation.participants = []
-          conv.participants.forEach((name) => {
-            this.conversation.participants.push({
-              name,
-              avatar: this.DEFAULT.AVATAR
-            })
-          })
-          
-          this.shownConversation.messages = this.conversation.messages.slice(0, this.messagesCount)
-          this.loadMoreMessages()
+         this.addConversation(conv)
+         this.shownConversation.messages = this.conversation.messages.slice(0, this.messagesCount)
+         this.loadMoreMessages()
        })
      }
    }
