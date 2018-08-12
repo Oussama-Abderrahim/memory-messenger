@@ -21,6 +21,9 @@ const mutations = {
   ADD_CONV: (state, conversation) => {
     state.currentIndex++;
     state.conversations.push(conversation);
+  },
+  SET_INDEX: (state, i) => {
+    state.currentIndex = i;
   }
 };
 
@@ -33,6 +36,9 @@ const getters = {
 };
 
 const actions = {
+  setConversationIndex: (store, i) => {
+    store.commit("SET_INDEX", i)
+  },
   addConversation: (store, conv) => {
     /* Load messages */
     let conversation = {

@@ -81,6 +81,11 @@ import Vuex from 'vuex'
         conversation: 'currentConversation'
       }),
    },
+   watch: {
+     conversation() {
+        this.shownConversation.messages = this.conversation.messages.slice(0, this.messagesCount)
+     }
+   },
    methods: {
      ...Vuex.mapActions([
        'addConversation'
