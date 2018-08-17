@@ -49,15 +49,15 @@ const actions = {
       return {
         content: message.content,
         sender_name: message.sender_name,
-        timestamp: message.timestamp,
+        timestamp: message.timestamp_ms,
         photos: message.photos
       };
     });
 
     /* Load participants */
-    conversation.participants = conv.participants.map(name => {
+    conversation.participants = conv.participants.map(participant => {
       return {
-        name,
+        name: participant.name,
         avatar: state.DEFAULT.AVATAR
       };
     });

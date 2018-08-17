@@ -1,10 +1,11 @@
 <template>
   <v-app
-    id="inspire"
+    id="app"
     dark
   >
     <v-navigation-drawer
       v-model="drawer"
+      class="navigation-drawer"
       fixed
       clipped
       app
@@ -18,19 +19,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar
-      color="black"
-      dense
-      fixed
-      clipped-left
-      app
-    >
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title class="mr-5 align-center">
-        <span class="title">{{currentConversation.title}}</span>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-    </v-toolbar>
+    
     <v-content fill-height>
       <router-view></router-view>
     </v-content>
@@ -44,7 +33,7 @@ import store from '@/stores/conversationsStore'
   export default {
     store: store,
     data: () => ({
-      drawer: true,
+      drawer: false,
     }),
     computed: {
       ...Vuex.mapGetters({
@@ -75,5 +64,9 @@ body,
   padding: 0;
   margin: 0;
   overflow: hidden;
+}
+
+.toolbar, .navigation-drawer {
+  background-color: #333
 }
 </style>

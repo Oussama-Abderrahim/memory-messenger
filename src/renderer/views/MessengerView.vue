@@ -1,6 +1,17 @@
 <template>
   <v-layout row wrap class="messenger">
     <v-flex xs8>
+      <v-toolbar
+        color="toolbar"
+        dense
+        fixed
+        app
+      >
+        <v-toolbar-title class="mr-5 align-center">
+          <span class="title">{{conversation.title}}</span>
+        </v-toolbar-title>
+        <v-spacer></v-spacer>
+      </v-toolbar>
       <v-list three-line
               v-scroll:#messages="onMessagesScroll"
               class="messenger-messages" id="messages" ref="messages">
@@ -124,7 +135,7 @@ import Vuex from 'vuex'
      formatDate(timestamp) {
        const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
        const MONTHS = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decembre']
-       let date = new Date(timestamp*1000)
+       let date = new Date(timestamp)
         
        return `${DAYS[date.getDay()]} ${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
      },
@@ -153,18 +164,18 @@ import Vuex from 'vuex'
 <style lang="scss">
 .messenger {
   color: white;
-  height: 100vh;
+  height: 100%;
   max-height: 100vh;
   overflow: hidden;
 
   &-messages {
     background: #333;
-    height: 100vh;
+    height: 100%;
     overflow-y: scroll;
   }
   &-controls {
     background-color: #444;
-    height: 100vh;
+    height: 100%;
     overflow-y: scroll;
   }
 
