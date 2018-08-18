@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap class="messenger">
     <v-flex xs8>
-      <v-toolbar
+      <!-- <v-toolbar card prominent
         color="toolbar"
         dense
         fixed
@@ -11,7 +11,7 @@
           <span class="title">{{conversation.title}}</span>
         </v-toolbar-title>
         <v-spacer></v-spacer>
-      </v-toolbar>
+      </v-toolbar> -->
       <v-list three-line
               v-scroll:#messages="onMessagesScroll"
               class="messenger-messages" id="messages" ref="messages">
@@ -46,6 +46,14 @@
     <v-flex xs4 class="messenger-controls">
       <v-btn @click='loadConversation'>load Conversation</v-btn>
       <v-list subheader>
+        <v-subheader>Rechercher</v-subheader>
+        <v-list-tile >
+          <v-list-tile-content>
+            <messenger-search-bar/>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-divider></v-divider>
         <v-subheader>Participants</v-subheader>
         <v-list-tile
           v-for="(participant, i) in conversation.participants"
@@ -59,7 +67,6 @@
           <v-list-tile-content>
             <v-list-tile-title v-html='participant.name'></v-list-tile-title>
           </v-list-tile-content>
-
         </v-list-tile>
       </v-list>
     </v-flex>
@@ -67,12 +74,16 @@
 </template>
 
 <script>
+import MessengerSearchBar from '@/components/MessengerSearchBar'
 import loadConversationFromFile from '@/api/loadConversationFromFile'
 import store from '@/stores/conversationsStore'
 import Vuex from 'vuex'
 
  export default {
    store,
+   components: {
+     MessengerSearchBar
+   },
    data() {
      return {
        DEFAULT: {
