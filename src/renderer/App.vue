@@ -19,7 +19,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    
+
     <v-content fill-height>
       <router-view></router-view>
     </v-content>
@@ -27,46 +27,47 @@
 </template>
 
 <script>
-import Vuex from 'vuex'
-import store from '@/stores/conversationsStore'
+import Vuex from 'vuex';
+import store from '@/stores/conversationsStore';
 
-  export default {
-    store: store,
-    data: () => ({
-      drawer: false,
-    }),
-    computed: {
-      ...Vuex.mapGetters({
-        currentConversation: 'currentConversation',
-        conversations: 'conversations'
-      })
-    },
-    methods: {
-      ...Vuex.mapActions({
-        setConversationIndex: 'setConversationIndex'
-      })
-    },
-    props: {
-      source: String
-    }
-  }
+export default {
+	store: store,
+	data: () => ({
+		drawer: false
+	}),
+	computed: {
+		...Vuex.mapGetters({
+			currentConversation: 'currentConversation',
+			conversations: 'conversations'
+		})
+	},
+	methods: {
+		...Vuex.mapActions({
+			setConversationIndex: 'setConversationIndex'
+		})
+	},
+	props: {
+		source: String
+	}
+};
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons");
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons');
 /* Global CSS */
 
 html,
 body,
 #app {
-  height: 100vh;
-  width: 100vw;
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
+	height: 100vh;
+	width: 100vw;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
 }
 
-.toolbar, .navigation-drawer {
-  background-color: #333
+.toolbar,
+.navigation-drawer {
+	background-color: #333;
 }
 </style>
