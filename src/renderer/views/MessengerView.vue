@@ -1,36 +1,55 @@
 <template>
   <v-layout row wrap class="messenger">
     <v-flex xs8>
-      <v-list three-line
-              v-scroll:#messages="onMessagesScroll"
-              class="messenger-messages" id="messages" ref="messages">
-        <template v-for="(message, i) in shownConversation.messages">
-          <v-list-tile
-            :key="i"
-            avatar
-            @click="1"
-            class="message">
-            <v-list-tile-avatar>
-              <img :src="conversation.participants[0].avatar">
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title
-              class="message-sender"
-              v-html='getSenderNameHTML(message.sender_name, message.timestamp)'></v-list-tile-title>
-              <v-list-tile-sub-title class="white--text message-content" v-html='message.content'></v-list-tile-sub-title>
+      <v-card
+        v-scroll:#messages="onMessagesScroll"
+        class="messenger-messages" id="messages" ref="messages">
+        <v-toolbar v-if='search.browseSearchMode' color="grey darken-4">
+          <v-toolbar-title>Found {{search.foundIndexes.length}} results ({{(search.searchIndex+1)}} of {{search.foundIndexes.length}}) </v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn flat>
+            Previous
+          </v-btn>
 
-            </v-list-tile-content>
-          </v-list-tile>
-          <v-layout justify-center :key='"photo" + i' v-if='message.photos'>
-            <img :src='getImgPath(message.photos[0].uri)' alt="Photo">
-          </v-layout>
-        </template>
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title @click='loadMoreMessages'>Charger la suite</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
+          <v-btn flat @click="nextSearchResult">
+            Next
+          </v-btn>
+
+        </v-toolbar>
+        <v-toolbar v-else color="grey darken-4">
+          <v-toolbar-title>{{conversation.title}}</v-toolbar-title>
+        </v-toolbar>
+        <v-card-text style='padding:0'>
+          <v-list three-line>
+            <template v-for="(message, i) in shownConversation.messages">
+              <v-list-tile
+                :key="i"
+                avatar
+                @click="1"
+                class="message">
+                <v-list-tile-avatar>
+                  <img :src="conversation.participants[0].avatar">
+                </v-list-tile-avatar>
+                <v-list-tile-content>
+                  <v-list-tile-title
+                  class="message-sender"
+                  v-html='getSenderNameHTML(message.sender_name, message.timestamp)'></v-list-tile-title>
+                  <v-list-tile-sub-title class="white--text message-content" v-html='message.content'></v-list-tile-sub-title>
+
+                </v-list-tile-content>
+              </v-list-tile>
+              <v-layout justify-center :key='"photo" + i' v-if='message.photos'>
+                <img :src='getImgPath(message.photos[0].uri)' alt="Photo">
+              </v-layout>
+            </template>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title @click='loadMoreMessages'>Charger la suite</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-card-text>
+      </v-card>
     </v-flex>
     <v-flex xs4 class="messenger-controls">
       <v-btn @click='loadConversation'>load Conversation</v-btn>
@@ -78,7 +97,12 @@ export default {
 			DEFAULT: {
 				SENDER_NAME: 'utilisateur',
 				AVATAR: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'
-			},
+      },
+      search: {
+        browseSearchMode: false,
+        searchIndex: 0,
+        foundIndexes: []
+      },
 			filepath: '/',
 			messagesOffset: 0,
 			messagesCount: 30,
@@ -115,21 +139,6 @@ export default {
 		 */
 		getImgPath(uri) {
 			return this.filepath + uri;
-		},
-		/**
-		 *
-		 */
-		loadMoreMessages() {
-			const LOAD_STEP = 10; // how many message to load each time
-			let lastMessageIndex = this.messagesOffset + this.messagesCount;
-			let newMessages = this.conversation.messages.slice(
-				lastMessageIndex,
-				lastMessageIndex + LOAD_STEP
-			);
-			this.shownConversation.messages = this.shownConversation.messages.concat(
-				newMessages
-			);
-			this.messagesCount += LOAD_STEP;
 		},
 		/**
 		 *
@@ -187,24 +196,62 @@ export default {
 				if (conv == null) return;
 				this.filepath = filepath;
 				this.addConversation(conv);
-				this.shownConversation.messages = this.conversation.messages.slice(
-					this.messagesOffset,
-					this.messagesCount
-				);
+				this.refreshShownMessages();
 				this.loadMoreMessages();
 			});
+    },
+    /**
+		 *
+		 */
+		loadMoreMessages() {
+			const LOAD_STEP = 10; // how many message to load each time
+			let lastMessageIndex = this.messagesOffset + this.messagesCount;
+			let newMessages = this.conversation.messages.slice(
+				lastMessageIndex,
+				lastMessageIndex + LOAD_STEP
+      );
+      this.$set(this.shownConversation, 'messages', this.shownConversation.messages.concat(
+				newMessages
+			));
+			this.messagesCount += LOAD_STEP;
+		},
+		refreshShownMessages() {
+      this.$set(this.shownConversation, 'messages', this.conversation.messages.slice(
+				this.messagesOffset,
+				this.messagesOffset+this.messagesCount
+      ))
+      this.loadMoreMessages();
 		},
 		/**
 		 *
 		 */
 		showSearchResult(foundIndexes) {
-
-		}
-	}
+      this.search.foundIndexes = foundIndexes
+      this.search.browseSearchMode = true
+      this.search.searchIndex = -1;
+      this.nextSearchResult();
+    },
+    nextSearchResult() {
+      this.search.searchIndex++;
+      this.search.searchIndex %= this.search.foundIndexes.length; // Back to 0 after last
+      this.messagesOffset = Math.max(this.search.foundIndexes[this.search.searchIndex] - 1, 0);
+			this.messagesCount = 30;
+      this.refreshShownMessages();
+    }
+  },
+  mounted() {
+    this.search.searchIndex = 0
+    this.search.browseSearchMode = false
+  }
 };
 </script>
 
 <style lang="scss">
+
+$grey: #2980b9; // grey darken-2
+$darkgrey: #424242; // grey darken-3
+$blue: #2980b9;
+
 .messenger {
 	color: white;
 	height: 100%;
@@ -212,12 +259,12 @@ export default {
 	overflow: hidden;
 
 	&-messages {
-		background: #333;
+		background: $grey;
 		height: 100%;
 		overflow-y: scroll;
 	}
 	&-controls {
-		background-color: #444;
+		background-color: $darkgrey;
 		height: 100%;
 		overflow-y: scroll;
 	}
@@ -227,7 +274,7 @@ export default {
 
 		&-sender {
 			font-weight: bold;
-			color: #2980b9;
+			color: $blue;
 		}
 
 		&-content {
