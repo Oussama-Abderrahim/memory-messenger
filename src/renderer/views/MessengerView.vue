@@ -33,7 +33,7 @@
                 <v-list-tile-content>
                   <v-list-tile-title
                   class="message-sender"
-                  v-html='getSenderNameHTML(message.sender_name, message.timestamp)'></v-list-tile-title>
+                  v-html='$getSenderNameHTML(message.sender_name, message.timestamp)'></v-list-tile-title>
                   <v-list-tile-sub-title class="white--text message-content" v-html='message.content'></v-list-tile-sub-title>
 
                 </v-list-tile-content>
@@ -97,12 +97,12 @@ export default {
 			DEFAULT: {
 				SENDER_NAME: 'utilisateur',
 				AVATAR: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'
-      },
-      search: {
-        browseSearchMode: false,
-        searchIndex: 0,
-        foundIndexes: []
-      },
+			},
+			search: {
+				browseSearchMode: false,
+				searchIndex: 0,
+				foundIndexes: []
+			},
 			filepath: '/',
 			messagesOffset: 0,
 			messagesCount: 30,
@@ -126,12 +126,10 @@ export default {
 	},
 	methods: {
 		...Vuex.mapActions(['addConversation']),
-		getSenderNameHTML(sender_name, timestamp) {
+		$getSenderNameHTML(sender_name, timestamp) {
 			return (
 				(sender_name || this.DEFAULT.SENDER_NAME) +
-				` <span class="grey--text text--lighten-1">${this.formatDate(
-					timestamp
-				)}</span>`
+				` <span class="grey--text text--lighten-1">${this.$getFormattedDate(timestamp)}</span>`
 			);
 		},
 		/**
@@ -149,10 +147,10 @@ export default {
 			}
 		},
 		/**
-		 * @param timestamp in seconds
+		 * @param timestamp in miliseconds
 		 * @return {String} date string in own format
 		 */
-		formatDate(timestamp) {
+		$getFormattedDate(timestamp) {
 			const DAYS = [
 				'Lundi',
 				'Mardi',
@@ -199,8 +197,8 @@ export default {
 				this.refreshShownMessages();
 				this.loadMoreMessages();
 			});
-    },
-    /**
+		},
+		/**
 		 *
 		 */
 		loadMoreMessages() {
@@ -209,45 +207,70 @@ export default {
 			let newMessages = this.conversation.messages.slice(
 				lastMessageIndex,
 				lastMessageIndex + LOAD_STEP
-      );
-      this.$set(this.shownConversation, 'messages', this.shownConversation.messages.concat(
-				newMessages
-			));
+			);
+			this.$set(
+				this.shownConversation,
+				'messages',
+				this.shownConversation.messages.concat(newMessages)
+			);
 			this.messagesCount += LOAD_STEP;
 		},
 		refreshShownMessages() {
-      this.$set(this.shownConversation, 'messages', this.conversation.messages.slice(
-				this.messagesOffset,
-				this.messagesOffset+this.messagesCount
-      ))
+			this.$set(
+				this.shownConversation,
+				'messages',
+				this.conversation.messages.slice(
+					this.messagesOffset,
+					this.messagesOffset + this.messagesCount
+				)
+			);
       this.loadMoreMessages();
 		},
 		/**
 		 *
 		 */
 		showSearchResult(foundIndexes) {
-      this.search.foundIndexes = foundIndexes
-      this.search.browseSearchMode = true
-      this.search.searchIndex = -1;
-      this.nextSearchResult();
+			this.search.foundIndexes = foundIndexes;
+			this.search.browseSearchMode = true;
+			this.search.searchIndex = -1;
+			this.nextSearchResult();
     },
-    nextSearchResult() {
-      this.search.searchIndex++;
-      this.search.searchIndex %= this.search.foundIndexes.length; // Back to 0 after last
-      this.messagesOffset = Math.max(this.search.foundIndexes[this.search.searchIndex] - 1, 0);
+    /**
+     * Increment the search index and refreshshownMessages
+     */
+		nextSearchResult() {
+			this.search.searchIndex++;
+			this.search.searchIndex %= this.search.foundIndexes.length; // Back to 0 after last
+			this.messagesOffset = Math.max(
+				this.search.foundIndexes[this.search.searchIndex] - 1,
+				0
+			);
 			this.messagesCount = 30;
-      this.refreshShownMessages();
-    }
-  },
-  mounted() {
-    this.search.searchIndex = 0
-    this.search.browseSearchMode = false
-  }
+			this.refreshShownMessages();
+    },
+    /**
+     * Decrement the search index and refreshShownMessages
+     */
+		prevSearchResult() {
+			this.search.searchIndex--;
+			if (this.search.searchIndex < 0)
+				this.search.searchIndex = this.search.foundIndexes.length - 1; // Back to 0 after last
+			this.messagesOffset = Math.max(
+				this.search.foundIndexes[this.search.searchIndex] - 1,
+				0
+			);
+			this.messagesCount = 30;
+			this.refreshShownMessages();
+		}
+	},
+	mounted() {
+		this.search.searchIndex = 0;
+		this.search.browseSearchMode = false;
+	}
 };
 </script>
 
 <style lang="scss">
-
 $grey: #2980b9; // grey darken-2
 $darkgrey: #424242; // grey darken-3
 $blue: #2980b9;
