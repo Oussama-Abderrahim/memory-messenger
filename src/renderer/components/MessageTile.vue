@@ -6,6 +6,14 @@
     @click="1"
     class="message"
   >
+    <v-flex xs2>
+      <div class="message-avatar">
+        <img
+          :src="getAvatarUrl()"
+          width='50'
+        >
+      </div>
+    </v-flex>
     <v-flex xs9>
       <div
         class="message-sender"
@@ -25,14 +33,7 @@
         >
       </div>
     </v-flex>
-    <v-flex xs3>
-      <div class="message-avatar">
-        <img
-          :src="avatarSrc"
-          width='50'
-        >
-      </div>
-    </v-flex>
+
   </v-layout>
 </template>
 
@@ -58,6 +59,9 @@ export default {
 		}
 	}),
 	methods: {
+		isSenderMe() {
+			return this.message.sender_name == 'Oussama Abderrahim';
+		},
 		$getSenderNameHTML(sender_name, timestamp) {
 			return (
 				(sender_name || this.DEFAULT.SENDER_NAME) +
@@ -105,6 +109,11 @@ export default {
 		 */
 		getImgPath(uri) {
 			return this.filepath + uri;
+		},
+		getAvatarUrl() {
+			if (this.isSenderMe())
+				return 'https://lh3.googleusercontent.com/-mGkGQtgsLjA/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3rcAQmY3uszZ1HR-gE4VfvMMJkiSNQ.CMID/s96-c/photo.jpg';
+			else return this.avatarSrc;
 		}
 	}
 };
@@ -116,7 +125,7 @@ $darkgrey: #424242; // grey darken-3
 $blue: #2980b9;
 
 .message {
-  width: 100%;
+	width: 100%;
 	background: inherit;
 	&:hover {
 		background: #525252;
@@ -125,6 +134,10 @@ $blue: #2980b9;
 	&-avatar {
 		width: 100%;
 		text-align: center;
+		img {
+			border: 3px solid white;
+			border-radius: 50%;
+		}
 	}
 	&-sender {
 		font-weight: bold;

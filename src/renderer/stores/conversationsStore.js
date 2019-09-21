@@ -58,7 +58,7 @@ const actions = {
     conversation.participants = conv.participants.map(participant => {
       return {
         name: participant.name,
-        avatar: state.DEFAULT.AVATAR
+        avatar: participant.avatar || state.DEFAULT.AVATAR
       };
     });
     store.commit("ADD_CONV", conversation);
