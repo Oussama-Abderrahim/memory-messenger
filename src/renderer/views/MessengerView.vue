@@ -38,8 +38,8 @@
         >
           <v-toolbar-title>{{conversation.title}}</v-toolbar-title>
         </v-toolbar>
-        <v-card-text style='padding:0'>
-          <v-container grid-list-xs>
+        <v-card-text >
+          <v-container grid-list-xs style='padding:0'>
             <v-layout
               row
               wrap
@@ -112,10 +112,6 @@ export default {
 	},
 	data() {
 		return {
-			DEFAULT: {
-				SENDER_NAME: 'utilisateur',
-				AVATAR: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'
-			},
 			search: {
 				browseSearchMode: false,
 				searchIndex: 0,

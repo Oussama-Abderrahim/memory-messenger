@@ -20,20 +20,19 @@
         v-html="$getSenderNameHTML(message.sender_name, message.timestamp)"
       >
       </div>
-      <div class="white--text message-content">
-        {{ message.content }}
-      </div>
+      <!-- White space in message-content is important as it uses white-space:pre-line -->
+      <div class="white--text message-content">{{message.content}}</div>
       <div
-        v-if='message.photos'
+        v-for='(photo,i) in message.photos'
+        :key='i'
         class="message-photo"
       >
         <img
-          :src='getImgPath(message.photos[0].uri)'
+          :src='getImgPath(photo.uri)'
           alt="Photo"
         >
       </div>
     </v-flex>
-
   </v-layout>
 </template>
 
@@ -55,7 +54,8 @@ export default {
 	data: () => ({
 		DEFAULT: {
 			SENDER_NAME: 'utilisateur',
-			AVATAR: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'
+			AVATAR:
+				'https://lh3.googleusercontent.com/-mGkGQtgsLjA/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3rcAQmY3uszZ1HR-gE4VfvMMJkiSNQ.CMID/s96-c/photo.jpg'
 		}
 	}),
 	methods: {
@@ -111,8 +111,7 @@ export default {
 			return this.filepath + uri;
 		},
 		getAvatarUrl() {
-			if (this.isSenderMe())
-				return 'https://lh3.googleusercontent.com/-mGkGQtgsLjA/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3rcAQmY3uszZ1HR-gE4VfvMMJkiSNQ.CMID/s96-c/photo.jpg';
+			if (this.isSenderMe()) return this.DEFAULT.AVATAR;
 			else return this.avatarSrc;
 		}
 	}
@@ -127,6 +126,8 @@ $blue: #2980b9;
 .message {
 	width: 100%;
 	background: inherit;
+	border-bottom: 1px grey solid;
+	padding: 10px 0 5px 0;
 	&:hover {
 		background: #525252;
 	}
@@ -146,6 +147,7 @@ $blue: #2980b9;
 
 	&-content {
 		font-weight: normal;
+		white-space: pre-line;
 	}
 
 	&-photo {
