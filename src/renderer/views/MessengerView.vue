@@ -1,63 +1,78 @@
 <template>
-  <v-layout row wrap class="messenger">
+  <v-layout
+    row
+    wrap
+    class="messenger"
+  >
     <v-flex xs8>
       <v-card
         v-scroll:#messages="onMessagesScroll"
-        class="messenger-messages" id="messages" ref="messages">
-        <v-toolbar v-if='search.browseSearchMode' color="grey darken-4">
+        class="messenger-messages"
+        id="messages"
+        ref="messages"
+      >
+        <v-toolbar
+          v-if='search.browseSearchMode'
+          color="grey darken-4"
+        >
           <v-toolbar-title>Found {{search.foundIndexes.length}} results ({{(search.searchIndex+1)}} of {{search.foundIndexes.length}}) </v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn flat>
+          <v-btn
+            flat
+            @click='prevSearchResult'
+          >
             Previous
           </v-btn>
 
-          <v-btn flat @click="nextSearchResult">
+          <v-btn
+            flat
+            @click="nextSearchResult"
+          >
             Next
           </v-btn>
 
         </v-toolbar>
-        <v-toolbar v-else color="grey darken-4">
+        <v-toolbar
+          v-else
+          color="grey darken-4"
+        >
           <v-toolbar-title>{{conversation.title}}</v-toolbar-title>
         </v-toolbar>
         <v-card-text style='padding:0'>
-          <v-list three-line>
-            <template v-for="(message, i) in shownConversation.messages">
-              <v-list-tile
-                :key="i"
-                avatar
-                @click="1"
-                class="message">
-                <v-list-tile-avatar>
-                  <img :src="conversation.participants[0].avatar">
-                </v-list-tile-avatar>
-                <v-list-tile-content>
-                  <v-list-tile-title
-                  class="message-sender"
-                  v-html='$getSenderNameHTML(message.sender_name, message.timestamp)'></v-list-tile-title>
-                  <v-list-tile-sub-title class="white--text message-content" v-html='message.content'></v-list-tile-sub-title>
-
-                </v-list-tile-content>
-              </v-list-tile>
-              <v-layout justify-center :key='"photo" + i' v-if='message.photos'>
-                <img :src='getImgPath(message.photos[0].uri)' alt="Photo">
-              </v-layout>
-            </template>
-            <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title @click='loadMoreMessages'>Charger la suite</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
+          <v-container grid-list-xs>
+            <v-layout
+              row
+              wrap
+            >
+              <template v-for="(message, i) in shownConversation.messages">
+                <message-tile
+                  :key='i'
+                  :message='message'
+                  :filepath='filepath'
+                  :avatarSrc='conversation.participants[0].avatar'
+                />
+              </template>
+              <v-flex xs12>
+                <v-btn
+                  color="info"
+                  @click='loadMoreMessages'
+                >Charger la suite</v-btn>
+              </v-flex>
+            </v-layout>
+          </v-container>
         </v-card-text>
       </v-card>
     </v-flex>
-    <v-flex xs4 class="messenger-controls">
+    <v-flex
+      xs4
+      class="messenger-controls"
+    >
       <v-btn @click='loadConversation'>load Conversation</v-btn>
       <v-list subheader>
         <v-subheader>Rechercher</v-subheader>
-        <v-list-tile >
+        <v-list-tile>
           <v-list-tile-content>
-            <messenger-search-bar @searched='showSearchResult'/>
+            <messenger-search-bar @searched='showSearchResult' />
           </v-list-tile-content>
         </v-list-tile>
 
@@ -67,7 +82,8 @@
           v-for="(participant, i) in conversation.participants"
           :key="i"
           avatar
-          @click="1">
+          @click="1"
+        >
           <v-list-tile-avatar>
             <img :src="participant.avatar">
           </v-list-tile-avatar>
@@ -83,6 +99,7 @@
 
 <script>
 import MessengerSearchBar from '@/components/MessengerSearchBar';
+import MessageTile from '@/components/MessageTile';
 import loadConversationFromFile from '@/api/loadConversationFromFile';
 import store from '@/stores/conversationsStore';
 import Vuex from 'vuex';
@@ -90,7 +107,8 @@ import Vuex from 'vuex';
 export default {
 	store,
 	components: {
-		MessengerSearchBar
+		MessengerSearchBar,
+		MessageTile
 	},
 	data() {
 		return {
@@ -126,18 +144,7 @@ export default {
 	},
 	methods: {
 		...Vuex.mapActions(['addConversation']),
-		$getSenderNameHTML(sender_name, timestamp) {
-			return (
-				(sender_name || this.DEFAULT.SENDER_NAME) +
-				` <span class="grey--text text--lighten-1">${this.$getFormattedDate(timestamp)}</span>`
-			);
-		},
-		/**
-		 *
-		 */
-		getImgPath(uri) {
-			return this.filepath + uri;
-		},
+
 		/**
 		 *
 		 */
@@ -145,40 +152,6 @@ export default {
 			if (e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight) {
 				this.loadMoreMessages();
 			}
-		},
-		/**
-		 * @param timestamp in miliseconds
-		 * @return {String} date string in own format
-		 */
-		$getFormattedDate(timestamp) {
-			const DAYS = [
-				'Lundi',
-				'Mardi',
-				'Mercredi',
-				'Jeudi',
-				'Vendredi',
-				'Samedi',
-				'Dimanche'
-			];
-			const MONTHS = [
-				'Janvier',
-				'Fevrier',
-				'Mars',
-				'Avril',
-				'Mai',
-				'Juin',
-				'Juillet',
-				'Aout',
-				'Septembre',
-				'Octobre',
-				'Novembre',
-				'Decembre'
-			];
-			let date = new Date(timestamp);
-
-			return `${DAYS[date.getDay()]} ${date.getDate()} ${
-				MONTHS[date.getMonth()]
-			} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 		},
 		/**
 		 * calls LoadConversationFromFile method to select a file
@@ -195,8 +168,17 @@ export default {
 				this.filepath = filepath;
 				this.addConversation(conv);
 				this.refreshShownMessages();
-				this.loadMoreMessages();
 			});
+		},
+		refreshShownMessages() {
+			this.$set(
+				this.shownConversation,
+				'messages',
+				this.conversation.messages.slice(
+					this.messagesOffset,
+					this.messagesOffset + this.messagesCount
+				)
+			);
 		},
 		/**
 		 *
@@ -215,17 +197,6 @@ export default {
 			);
 			this.messagesCount += LOAD_STEP;
 		},
-		refreshShownMessages() {
-			this.$set(
-				this.shownConversation,
-				'messages',
-				this.conversation.messages.slice(
-					this.messagesOffset,
-					this.messagesOffset + this.messagesCount
-				)
-			);
-      this.loadMoreMessages();
-		},
 		/**
 		 *
 		 */
@@ -234,10 +205,10 @@ export default {
 			this.search.browseSearchMode = true;
 			this.search.searchIndex = -1;
 			this.nextSearchResult();
-    },
-    /**
-     * Increment the search index and refreshshownMessages
-     */
+		},
+		/**
+		 * Increment the search index and refreshshownMessages
+		 */
 		nextSearchResult() {
 			this.search.searchIndex++;
 			this.search.searchIndex %= this.search.foundIndexes.length; // Back to 0 after last
@@ -247,10 +218,10 @@ export default {
 			);
 			this.messagesCount = 30;
 			this.refreshShownMessages();
-    },
-    /**
-     * Decrement the search index and refreshShownMessages
-     */
+		},
+		/**
+		 * Decrement the search index and refreshShownMessages
+		 */
 		prevSearchResult() {
 			this.search.searchIndex--;
 			if (this.search.searchIndex < 0)
@@ -290,19 +261,6 @@ $blue: #2980b9;
 		background-color: $darkgrey;
 		height: 100%;
 		overflow-y: scroll;
-	}
-
-	.message {
-		background: inherit;
-
-		&-sender {
-			font-weight: bold;
-			color: $blue;
-		}
-
-		&-content {
-			font-weight: normal;
-		}
 	}
 }
 </style>
