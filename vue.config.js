@@ -4,14 +4,14 @@ module.exports = {
   runtimeCompiler: true,
   transpileDependencies: ["vuetify"],
   css: {
-    modules: true,
+    modules: true
   },
   configureWebpack: {
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, vueSrc),
+        "@": path.resolve(__dirname, vueSrc)
       },
-      extensions: [".js", ".vue", ".json"],
-    },
-  },
+      extensions: [".js", ".vue", ".json"]
+    }
+  }
 };

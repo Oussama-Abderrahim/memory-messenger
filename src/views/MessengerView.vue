@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap class="messenger">
-    {{shownConversation}}
+    Hello 
     <!-- <v-flex xs8>
       <v-card
         v-scroll:#messages="onMessagesScroll"
