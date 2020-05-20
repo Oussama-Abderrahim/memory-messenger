@@ -28,7 +28,7 @@
 
 <script>
 import Vuex from 'vuex';
-import store from '@/stores/conversationsStore';
+import store from '@/store/conversationsStore';
 
 export default {
 	store: store,
