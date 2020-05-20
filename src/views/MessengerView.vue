@@ -1,7 +1,7 @@
 <template>
-  <v-layout row wrap class="messenger">
-    Hello 
-    <!-- <v-flex xs8>
+  <v-container grid-list-xs>
+    <v-layout row wrap class="messenger">
+      <!-- <v-flex xs8>
       <v-card
         v-scroll:#messages="onMessagesScroll"
         class="messenger-messages"
@@ -64,8 +64,9 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
-    </v-flex>-->
-  </v-layout>
+      </v-flex>-->
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
