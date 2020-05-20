@@ -1,11 +1,11 @@
 <template>
-  <v-layout row wrap @click="1" class="message">
-    <v-flex xs2>
+  <v-row wrap @click="1" class="message">
+    <v-col cols="2">
       <div class="message-avatar">
         <img :src="getAvatarUrl()" width="50" />
       </div>
-    </v-flex>
-    <v-flex xs9>
+    </v-col>
+    <v-col cols="9">
       <div
         class="message-sender"
         v-html="$getSenderNameHTML(message.sender_name, message.timestamp)"
@@ -15,8 +15,8 @@
       <div v-for="(photo, i) in message.photos" :key="i" class="message-photo">
         <img :src="getImgPath(photo.uri)" alt="Photo" />
       </div>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -25,12 +25,12 @@ export default {
     avatarSrc: { type: String, default: "" },
     message: {
       type: Object,
-      default: {
+      default: () => ({
         sender_name: "user",
         timestamp: new Date(),
         content: "text",
         photos: []
-      }
+      })
     },
     filepath: { type: String, default: "/" }
   },

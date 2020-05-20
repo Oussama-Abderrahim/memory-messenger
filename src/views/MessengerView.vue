@@ -1,26 +1,21 @@
 <template>
-  <v-container grid-list-xs>
-    <v-layout row wrap class="messenger">
-      <!-- <v-flex xs8>
-      <v-card
-        v-scroll:#messages="onMessagesScroll"
-        class="messenger-messages"
-        id="messages"
-        ref="messages"
-      >
-        <v-toolbar v-if="search.browseSearchMode" color="grey darken-4">
-          <v-toolbar-title>Found {{ search.foundIndexes.length }} results ({{ (search.searchIndex+1) }} of {{ search.foundIndexes.length }})</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-btn flat @click="prevSearchResult">Previous</v-btn>
+  <v-container grid-list-xs fill-height>
+    <v-row wrap class="messenger">
+      <v-col cols="8" class="messenger-messages">
+        <v-container>
+          <v-toolbar v-if="search.browseSearchMode" color="grey darken-4">
+            <v-toolbar-title>Found {{ search.foundIndexes.length }} results ({{ (search.searchIndex+1) }} of {{ search.foundIndexes.length }})</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn flat @click="prevSearchResult">Previous</v-btn>
 
-          <v-btn flat @click="nextSearchResult">Next</v-btn>
-        </v-toolbar>
-        <v-toolbar v-else color="grey darken-4">
-          <v-toolbar-title>{{ conversation.title }}</v-toolbar-title>
-        </v-toolbar>
-        <v-card-text>
+            <v-btn flat @click="nextSearchResult">Next</v-btn>
+          </v-toolbar>
+          <v-toolbar v-else color="grey darken-4">
+            <v-toolbar-title>{{ conversation.title }}</v-toolbar-title>
+          </v-toolbar>
+
           <v-container grid-list-xs style="padding:0">
-            <v-layout row wrap>
+            <v-row wrap>
               <template v-for="(message, i) in shownConversation.messages">
                 <message-tile
                   :key="i"
@@ -29,49 +24,48 @@
                   :avatarSrc="conversation.participants[0].avatar"
                 />
               </template>
-              <v-flex xs12>
-                <v-btn color="info" @click="loadMoreMessages">Charger la suite</v-btn>
-              </v-flex>
-            </v-layout>
+            </v-row>
+            <v-row xs12>
+              <v-btn color="info" @click="loadMoreMessages">Charger la suite</v-btn>
+            </v-row>
           </v-container>
-        </v-card-text>
-      </v-card>
-    </v-flex>
-    <v-flex xs4 class="messenger-controls">
-      <v-btn @click="loadConversation">load Conversation</v-btn>
-      <v-list subheader>
-        <v-subheader>Rechercher</v-subheader>
-        <v-list-tile>
-          <v-list-tile-content>
-            <messenger-search-bar @searched='showSearchResult' />
-          </v-list-tile-content>
-        </v-list-tile>
+        </v-container>
+      </v-col>
+      <v-col cols="4" class="messenger-controls">
+        <v-btn @click="loadConversation">load Conversation</v-btn>
+        <v-list subheader>
+          <v-subheader>Rechercher</v-subheader>
+          <v-list-item>
+            <v-list-item-content>
+              <messenger-search-bar @searched="showSearchResult" />
+            </v-list-item-content>
+          </v-list-item>
 
-        <v-divider></v-divider>
-        <v-subheader>Participants</v-subheader>
-        <v-list-tile
-          v-for="(participant, i) in conversation.participants"
-          :key="i"
-          avatar
-          @click="1"
-        >
-          <v-list-tile-avatar>
-            <img :src="participant.avatar">
-          </v-list-tile-avatar>
+          <v-divider></v-divider>
+          <v-subheader>Participants</v-subheader>
+          <v-list-item
+            v-for="(participant, i) in conversation.participants"
+            :key="i"
+            avatar
+            @click="1"
+          >
+            <v-list-item-avatar>
+              <img :src="participant.avatar" />
+            </v-list-item-avatar>
 
-          <v-list-tile-content>
-            <v-list-tile-title v-html='participant.name'></v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-      </v-flex>-->
-    </v-layout>
+            <v-list-item-content>
+              <v-list-item-title v-html="participant.name"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
-// import MessengerSearchBar from "../components/MessengerSearchBar";
-// import MessageTile from "../components/MessageTile";
+import MessengerSearchBar from "../components/MessengerSearchBar";
+import MessageTile from "../components/MessageTile";
 import loadConversationFromFile from "../api/loadConversationFromFile";
 import store from "../store/conversationsStore";
 import Vuex from "vuex";
@@ -79,8 +73,8 @@ import Vuex from "vuex";
 export default {
   store,
   components: {
-    // MessengerSearchBar,
-    // MessageTile
+    MessengerSearchBar,
+    MessageTile
   },
   data() {
     return {
@@ -223,7 +217,7 @@ $blue: #2980b9;
   &-messages {
     background: $grey;
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: hidden;
   }
   &-controls {
     background-color: $darkgrey;

@@ -1,5 +1,5 @@
 <template>
-  <v-app id="app">
+  <v-app dark>
     <v-navigation-drawer v-model="drawer" app clipped>
       <v-list dense>
         <v-list-item
@@ -11,9 +11,6 @@
           <v-list-item-avatar>
             <v-img :src="`https://randomuser.me/api/portraits/men/${item.picture}.jpg`" alt></v-img>
           </v-list-item-avatar>
-          <!-- <v-list-item-action>
-            <v-icon>mdi-view-dashboard</v-icon>
-          </v-list-item-action>-->
           <v-list-item-content>
             <v-list-item-title>{{ conversation.title }}</v-list-item-title>
           </v-list-item-content>
@@ -28,37 +25,7 @@
 
     <v-content>
       <router-view></router-view>
-      <!-- <v-container
-        class="fill-height"
-        fluid
-      >
-        <v-row
-          align="center"
-          justify="center"
-        >
-          <v-col class="shrink">
-            <v-tooltip right>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  :href="source"
-                  icon
-                  large
-                  target="_blank"
-                  v-on="on"
-                >
-                  <v-icon large>mdi-code-tags</v-icon>
-                </v-btn>
-              </template>
-              <span>Source</span>
-            </v-tooltip>
-          </v-col>
-        </v-row>
-      </v-container> -->
     </v-content>
-
-    <!-- <v-footer app>
-      <span>&copy; 2020</span>
-    </v-footer>-->
   </v-app>
 </template>
 
