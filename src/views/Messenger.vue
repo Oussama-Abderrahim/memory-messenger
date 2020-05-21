@@ -1,10 +1,10 @@
 <template>
   <v-container fill-height class="messenger" fluid mx-6>
     <v-row class="fill-height" dense>
-      <v-col cols="3">
+      <v-col cols="3" class="fill-height">
         <v-container fill-height class="messenger-conversations">
           <v-row class="fill-height">
-            <v-col cols="12">
+            <v-col cols="12" class="fill-height">
               <h3>Conversation</h3>
               <v-text-field
                 outlined
@@ -19,7 +19,7 @@
                 <v-col cols="3">New Chat</v-col>
               </v-row>
               <!-- Single Card -->
-              <v-container fluid px-0 style='max-height: 400px; overflow-y: scroll'>
+              <v-container fluid pa-0 class="messenger-conversations-list">
                 <conversation-tile
                   @click="activeConversation = i"
                   :active="i == activeConversation"
@@ -126,6 +126,26 @@ export default {
         title: "Gerald Dean",
         preview: "I am ready.",
         time: "6:50pm"
+      },
+      {
+        title: "Gerald Dean",
+        preview: "I am ready.",
+        time: "6:50pm"
+      },
+      {
+        title: "Gerald Dean",
+        preview: "I am ready.",
+        time: "6:50pm"
+      },
+      {
+        title: "Gerald Dean",
+        preview: "I am ready.",
+        time: "6:50pm"
+      },
+      {
+        title: "Gerald Dean",
+        preview: "I am ready.",
+        time: "6:50pm"
       }
     ]
   }),
@@ -150,6 +170,36 @@ $gray: #969aa6;
 
   &-conversations {
     border: 1px solid grey;
+
+    &-list {
+      height: 80%;
+      padding-top: 0;
+      margin-top: 0;
+      overflow-y: scroll;
+      scrollbar-width: thin;
+      scrollbar-color: red;
+    }
   }
+}
+
+html {
+  --scrollbarBG: #cfd8dc;
+  --thumbBG: #90a4ae;
+}
+
+body::-webkit-scrollbar {
+  width: 11px;
+}
+body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+body::-webkit-scrollbar-track {
+  background: var(--scrollbarBG);
+}
+body::-webkit-scrollbar-thumb {
+  background-color: var(--thumbBG);
+  border-radius: 6px;
+  border: 3px solid var(--scrollbarBG);
 }
 </style>

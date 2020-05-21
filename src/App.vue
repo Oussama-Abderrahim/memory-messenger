@@ -5,7 +5,7 @@
       <v-toolbar-title>Application</v-toolbar-title>
     </v-app-bar>
 
-    <v-content>
+    <v-content class="fill-height">
       <router-view></router-view>
     </v-content>
   </v-app>

@@ -36,8 +36,8 @@ export default {
 <style scoped>
 .item {
   background-color: var(--v-secondary-darken2);
-  margin-top: 5px;
-  margin-bottom: 5px;
+  /* margin-top: 5px; */
+  margin-bottom: 10px;
   text-overflow: ellipsis;
 }
 
