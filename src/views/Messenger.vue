@@ -19,7 +19,7 @@
                 <v-col cols="3">New Chat</v-col>
               </v-row>
               <!-- Single Card -->
-              <v-container fluid pa-0 class="messenger-conversations-list">
+              <perfect-scrollbar :options="{scrollingThreshold: 300}" class="messenger-conversations-list">
                 <conversation-tile
                   @click="activeConversation = i"
                   :active="i == activeConversation"
@@ -27,7 +27,7 @@
                   v-for="(item,i) in conversations"
                   :key="i"
                 />
-              </v-container>
+              </perfect-scrollbar>
               <v-spacer></v-spacer>
             </v-col>
           </v-row>
@@ -171,35 +171,9 @@ $gray: #969aa6;
   &-conversations {
     border: 1px solid grey;
 
-    &-list {
+    .ps {
       height: 80%;
-      padding-top: 0;
-      margin-top: 0;
-      overflow-y: scroll;
-      scrollbar-width: thin;
-      scrollbar-color: red;
     }
   }
-}
-
-html {
-  --scrollbarBG: #cfd8dc;
-  --thumbBG: #90a4ae;
-}
-
-body::-webkit-scrollbar {
-  width: 11px;
-}
-body {
-  scrollbar-width: thin;
-  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
-}
-body::-webkit-scrollbar-track {
-  background: var(--scrollbarBG);
-}
-body::-webkit-scrollbar-thumb {
-  background-color: var(--thumbBG);
-  border-radius: 6px;
-  border: 3px solid var(--scrollbarBG);
 }
 </style>
