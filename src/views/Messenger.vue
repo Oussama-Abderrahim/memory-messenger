@@ -1,11 +1,13 @@
 <template>
-  <v-container fill-height class="messenger" fluid mx-6>
+  <v-container fill-height class="messenger" fluid mx-6 py-0>
     <v-row class="fill-height" dense>
-      <v-col cols="3" class="fill-height">
-        <v-container fill-height class="messenger-conversations">
+      <!-- Conversations Bar -->
+      <v-col cols="3" class="fill-height messenger-conversations">
+        <v-container fill-height>
           <v-row class="fill-height">
             <v-col cols="12" class="fill-height">
               <h3>Conversation</h3>
+              <!-- Search Bar -->
               <v-text-field
                 outlined
                 dense
@@ -18,8 +20,12 @@
                 <v-spacer></v-spacer>
                 <v-col cols="3">New Chat</v-col>
               </v-row>
-              <!-- Single Card -->
-              <perfect-scrollbar :options="{scrollingThreshold: 300}" class="messenger-conversations-list">
+              <!-- Conversations Lists -->
+              <perfect-scrollbar
+                :options="{scrollingThreshold: 300}"
+                class="messenger-conversations-list"
+              >
+                <!-- Single Card -->
                 <conversation-tile
                   @click="activeConversation = i"
                   :active="i == activeConversation"
@@ -33,9 +39,11 @@
           </v-row>
         </v-container>
       </v-col>
+      <!-- Messages Bar -->
       <v-col cols="6">
         <v-container></v-container>
       </v-col>
+      <!-- Informations Bar -->
       <v-col cols="3">
         <v-container></v-container>
       </v-col>
@@ -52,91 +60,6 @@ export default {
   data: () => ({
     activeConversation: -1,
     conversations: [
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
       {
         title: "Gerald Dean",
         preview: "I am ready.",
@@ -167,9 +90,10 @@ $gray: #969aa6;
 .messenger {
   background-color: var(--v-secondary-base);
   width: 100%;
+  padding: 0;
 
   &-conversations {
-    border: 1px solid grey;
+    border-right: 1px solid grey;
 
     .ps {
       height: 80%;

@@ -1,6 +1,6 @@
 <template>
   <v-app dark>
-    <v-app-bar app flat color='secondary'>
+    <v-app-bar app flat color='secondary_dark'>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Application</v-toolbar-title>
     </v-app-bar>
