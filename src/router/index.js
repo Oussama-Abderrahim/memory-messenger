@@ -9,7 +9,7 @@ export default new Router({
       path: "/",
       name: "messenger-view",
       component: () =>
-        import(/* webpackChunkName: "about" */ "@/views/MessengerView.vue")
+        import(/* webpackChunkName: "about" */ "@/views/Messenger.vue")
     },
     {
       path: "*",

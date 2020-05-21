@@ -1,24 +1,6 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer v-model="drawer" app clipped>
-      <v-list dense>
-        <v-list-item
-          link
-          @click="setConversationIndex(i)"
-          v-for="(conversation, i) in conversations"
-          :key="i"
-        >
-          <v-list-item-avatar>
-            <v-img :src="`https://randomuser.me/api/portraits/men/${item.picture}.jpg`" alt></v-img>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>{{ conversation.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-app-bar app clipped-left>
+    <v-app-bar app flat color='secondary'>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Application</v-toolbar-title>
     </v-app-bar>
@@ -56,7 +38,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons");
 /* Global CSS */
 
@@ -68,10 +50,7 @@ body,
   padding: 0;
   margin: 0;
   overflow: hidden;
+  background-color: var(--v-secondary-base);
 }
 
-.toolbar,
-.navigation-drawer {
-  background-color: #333;
-}
 </style>
