@@ -14,9 +14,6 @@
           <span class="content-photo" v-for="(photo, i) in message.photos" :key="i">
             <v-img :src="getImgPath(photo.uri)" :alt="`${message.sender_name} has sent a photo`" />
           </span>
-          <span class="content-photo" v-for="(photo, i) in message.photos" :key="i">
-            <v-img :src="getImgPath(photo.uri)" :alt="`${message.sender_name} has sent a photo`" />
-          </span>
         </v-row>
         <!-- Message Timestamp -->
         <v-row class="content" :justify="right? 'end': 'start'">
@@ -31,6 +28,8 @@
 </template>
 
 <script>
+import DateFormatter from "@/utils/DateFormatter";
+
 export default {
   props: {
     avatarSrc: { type: String, default: "" },
@@ -74,34 +73,7 @@ export default {
      * @return {String} date string in own format
      */
     $getFormattedDate(timestamp) {
-      const DAYS = [
-        "Lundi",
-        "Mardi",
-        "Mercredi",
-        "Jeudi",
-        "Vendredi",
-        "Samedi",
-        "Dimanche"
-      ];
-      const MONTHS = [
-        "Janvier",
-        "Fevrier",
-        "Mars",
-        "Avril",
-        "Mai",
-        "Juin",
-        "Juillet",
-        "Aout",
-        "Septembre",
-        "Octobre",
-        "Novembre",
-        "Decembre"
-      ];
-      let date = new Date(timestamp);
-
-      return `${DAYS[date.getDay()]} ${date.getDate()} ${
-        MONTHS[date.getMonth()]
-      } ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+      return DateFormatter.formatDate(timestamp);
     },
     /**
      *
@@ -110,7 +82,7 @@ export default {
       return this.filepath + uri;
     },
     getAvatarUrl() {
-      if (this.isSenderMe()) return this.DEFAULT.AVATAR;
+      if (this.isSenderMe() || !this.avatarSrc) return this.DEFAULT.AVATAR;
       else return this.avatarSrc;
     }
   }
