@@ -1,6 +1,8 @@
 {
   "name": "memory-messenger",
   "version": "0.1.0",
+  "description": "An offline messenger that reads download facebook messages in JSON",
+
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
