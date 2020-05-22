@@ -45,6 +45,8 @@
           <perfect-scrollbar @ps-y-reach-end="loadMoreMessages" class="fill-height">
             <message-tile
               v-for="(message, i) in shownConversation.messages"
+              :filepath="filepath"
+              :avatarSrc="getAvatar(message.sender_name)"
               :key="i"
               :message="message"
             ></message-tile>
@@ -117,6 +119,7 @@ export default {
      * loads Participant objects to conversation data
      */
     loadConversation() {
+      console.log("Loading file ...");
       this.messagesCount = 30;
       this.messagesOffset = 0;
       loadConversationFromFile((conv, filepath) => {
@@ -143,6 +146,8 @@ export default {
     loadMoreMessages() {
       const LOAD_STEP = 10; // how many message to load each time
       let lastMessageIndex = this.messagesOffset + this.messagesCount;
+      if (lastMessageIndex >= this.conversation.messages.length) return;
+
       let newMessages = this.conversation.messages.slice(
         lastMessageIndex,
         lastMessageIndex + LOAD_STEP
@@ -153,6 +158,12 @@ export default {
         this.shownConversation.messages.concat(newMessages)
       );
       this.messagesCount += LOAD_STEP;
+    },
+    /**
+     * Get Avatar url from participants object
+     */
+    getAvatar(name) {
+      return this.conversation.participants.filter(p => p.name == name)[0].avatar;
     }
   },
 

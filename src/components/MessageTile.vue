@@ -5,12 +5,21 @@
         <img :src="getAvatarUrl()" width="50" />
       </v-col>
       <v-col cols="10">
+        <!-- Message Content -->
         <v-row class="content" :justify="right? 'end': 'start'">
-          <!-- <h4 class="message-content-sender">{{ message.sender_name}}</h4> -->
           <span class="content-text">{{message.content}}</span>
         </v-row>
+        <!-- Message Photos ///TODO Add stickers -->
+        <v-row class="content" :justify="right? 'end': 'start'" v-if="message.photos">
+          <span class="content-photo" v-for="(photo, i) in message.photos" :key="i">
+            <v-img :src="getImgPath(photo.uri)" :alt="`${message.sender_name} has sent a photo`" />
+          </span>
+          <span class="content-photo" v-for="(photo, i) in message.photos" :key="i">
+            <v-img :src="getImgPath(photo.uri)" :alt="`${message.sender_name} has sent a photo`" />
+          </span>
+        </v-row>
+        <!-- Message Timestamp -->
         <v-row class="content" :justify="right? 'end': 'start'">
-          <!-- <h4 class="message-content-sender">{{ message.sender_name}}</h4> -->
           <span class="caption content-time">{{$getFormattedDate(message.timestamp)}}</span>
         </v-row>
       </v-col>
@@ -101,9 +110,8 @@ export default {
       return this.filepath + uri;
     },
     getAvatarUrl() {
-      return this.DEFAULT.AVATAR;
-      // if (this.isSenderMe()) return this.DEFAULT.AVATAR;
-      // else return this.avatarSrc;
+      if (this.isSenderMe()) return this.DEFAULT.AVATAR;
+      else return this.avatarSrc;
     }
   }
 };
@@ -143,9 +151,8 @@ $blue: #2980b9;
     }
 
     &-photo {
-      img {
-        width: 90%;
-      }
+      width: 90%;
+      margin-top: 3px;
     }
   }
 }
