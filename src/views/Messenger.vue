@@ -27,11 +27,11 @@
               >
                 <!-- Single Card -->
                 <conversation-tile
-                  @click="activeConversation = i"
-                  :active="i == activeConversation"
-                  :item="item"
+                  @click="setConversationIndex(i); refreshShownMessages()"
                   v-for="(item,i) in conversations"
-                  :key="i"
+                  :active="item == currentConversation"
+                  :item="item"
+                  :key="'conversation-'+i"
                 />
               </perfect-scrollbar>
               <v-spacer></v-spacer>
@@ -47,16 +47,18 @@
               v-for="(message, i) in shownConversation.messages"
               :filepath="filepath"
               :avatarSrc="getAvatar(message.sender_name)"
-              :key="i"
+              :key="'message-' + i"
               :message="message"
             ></message-tile>
           </perfect-scrollbar>
         </v-container>
       </v-col>
       <!-- Informations Bar -->
-      <v-col cols="3">
+      <v-col cols="3" class="fill-height">
         <v-container fill-height>
-          <v-btn @click="loadConversation" color="success">Load Conversation</v-btn>
+          <v-row class="fill-height">
+            <v-btn @click="loadConversation" color="success">Load Conversation</v-btn>
+          </v-row>
         </v-container>
       </v-col>
     </v-row>
@@ -83,35 +85,33 @@ export default {
     shownConversation: {
       messages: []
     },
-    activeConversation: -1,
-    conversations: [
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      },
-      {
-        title: "Gerald Dean",
-        preview: "I am ready.",
-        time: "6:50pm"
-      }
-    ]
+    activeConversation: -1
   }),
   computed: {
     ...Vuex.mapGetters({
-      conversation: "currentConversation"
+      currentConversation: "currentConversation",
+      conversations: "conversations"
     })
   },
   watch: {
-    conversation() {
-      this.shownConversation.messages = this.conversation.messages.slice(
+    currentConversation() {
+      this.shownConversation.messages = this.currentConversation.messages.slice(
         0,
         this.messagesCount
       );
     }
   },
   methods: {
-    ...Vuex.mapActions(["addConversation"]),
+    ...Vuex.mapActions({
+      addConversation: "addConversation",
+      storeSetConversationIndex: "setConversationIndex"
+    }),
+    setConversationIndex(i) {
+      this.storeSetConversationIndex(i);
+      this.messagesCount = 30;
+      this.messagesOffset = 0;
+      this.refreshShownMessages();
+    },
     /**
      * calls LoadConversationFromFile method to select a file
      * loads Message objects to conversation data
@@ -119,7 +119,7 @@ export default {
      * loads Participant objects to conversation data
      */
     loadConversation() {
-      console.log("Loading file ...");
+      console.log(this.conversations);
       this.messagesCount = 30;
       this.messagesOffset = 0;
       loadConversationFromFile((conv, filepath) => {
@@ -134,7 +134,7 @@ export default {
       this.$set(
         this.shownConversation,
         "messages",
-        this.conversation.messages.slice(
+        this.currentConversation.messages.slice(
           this.messagesOffset,
           this.messagesOffset + this.messagesCount
         )
@@ -146,9 +146,9 @@ export default {
     loadMoreMessages() {
       const LOAD_STEP = 10; // how many message to load each time
       let lastMessageIndex = this.messagesOffset + this.messagesCount;
-      if (lastMessageIndex >= this.conversation.messages.length) return;
+      if (lastMessageIndex >= this.currentConversation.messages.length) return;
 
-      let newMessages = this.conversation.messages.slice(
+      let newMessages = this.currentConversation.messages.slice(
         lastMessageIndex,
         lastMessageIndex + LOAD_STEP
       );
@@ -163,7 +163,14 @@ export default {
      * Get Avatar url from participants object
      */
     getAvatar(name) {
-      return this.conversation.participants.filter(p => p.name == name)[0].avatar;
+      let participant = this.currentConversation.participants.filter(
+        p => p.name == name
+      );
+      if (participant && participant.length) {
+        return participant[0].avatar;
+      } else {
+        return null;
+      }
     }
   },
 
@@ -172,11 +179,6 @@ export default {
 </script>
 
 <style lang='scss'>
-$pink: #f1558a;
-$blue: #222a3f;
-$dark_blue: #1d2437;
-$gray: #969aa6;
-
 .ps {
   width: 100%;
 }
