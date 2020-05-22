@@ -42,7 +42,7 @@
       <!-- Messages Bar -->
       <v-col cols="6" class="fill-height messenger-messages">
         <v-container fill-height>
-          <perfect-scrollbar class="fill-height">
+          <perfect-scrollbar @ps-y-reach-end="loadMoreMessages" class="fill-height">
             <message-tile
               v-for="(message, i) in shownConversation.messages"
               :key="i"
@@ -136,6 +136,23 @@ export default {
           this.messagesOffset + this.messagesCount
         )
       );
+    },
+    /**
+     *
+     */
+    loadMoreMessages() {
+      const LOAD_STEP = 10; // how many message to load each time
+      let lastMessageIndex = this.messagesOffset + this.messagesCount;
+      let newMessages = this.conversation.messages.slice(
+        lastMessageIndex,
+        lastMessageIndex + LOAD_STEP
+      );
+      this.$set(
+        this.shownConversation,
+        "messages",
+        this.shownConversation.messages.concat(newMessages)
+      );
+      this.messagesCount += LOAD_STEP;
     }
   },
 
