@@ -38,9 +38,10 @@ const actions = {
   setConversationIndex: (store, i) => {
     store.commit("SET_INDEX", i);
   },
-  addConversation: (store, conv) => {
+  addConversation: (store, { conv, filepath }) => {
     let conversation = {
       title: conv.title,
+      filepath,
     };
 
     /* Load participants */
@@ -51,6 +52,7 @@ const actions = {
       };
     });
 
+    conversation.avatar = conversation.participants[0].avatar;
     conversation.preview = conv.messages[0].content;
     conversation.time = DateFormatter.formatDate(conv.messages[0].timestamp_ms);
 

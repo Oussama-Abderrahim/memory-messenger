@@ -84,7 +84,7 @@ export default {
         foundIndexes: []
       },
       filepath: "/",
-      messagesOffset: 0,
+      messageStartIndex: 0,
       messagesCount: 30,
       shownConversation: {
         messages: []
@@ -123,7 +123,7 @@ export default {
      */
     loadConversation() {
       this.messagesCount = 30;
-      this.messagesOffset = 0;
+      this.messageStartIndex = 0;
       loadConversationFromFile((conv, filepath) => {
         console.log(conv);
         if (conv == null) return;
@@ -137,8 +137,8 @@ export default {
         this.shownConversation,
         "messages",
         this.conversation.messages.slice(
-          this.messagesOffset,
-          this.messagesOffset + this.messagesCount
+          this.messageStartIndex,
+          this.messageStartIndex + this.messagesCount
         )
       );
     },
@@ -147,7 +147,7 @@ export default {
      */
     loadMoreMessages() {
       const LOAD_STEP = 10; // how many message to load each time
-      let lastMessageIndex = this.messagesOffset + this.messagesCount;
+      let lastMessageIndex = this.messageStartIndex + this.messagesCount;
       let newMessages = this.conversation.messages.slice(
         lastMessageIndex,
         lastMessageIndex + LOAD_STEP
@@ -174,7 +174,7 @@ export default {
     nextSearchResult() {
       this.search.searchIndex++;
       this.search.searchIndex %= this.search.foundIndexes.length; // Back to 0 after last
-      this.messagesOffset = Math.max(
+      this.messageStartIndex = Math.max(
         this.search.foundIndexes[this.search.searchIndex] - 1,
         0
       );
@@ -188,7 +188,7 @@ export default {
       this.search.searchIndex--;
       if (this.search.searchIndex < 0)
         this.search.searchIndex = this.search.foundIndexes.length - 1; // Back to 0 after last
-      this.messagesOffset = Math.max(
+      this.messageStartIndex = Math.max(
         this.search.foundIndexes[this.search.searchIndex] - 1,
         0
       );

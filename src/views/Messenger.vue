@@ -45,7 +45,7 @@
           <perfect-scrollbar @ps-y-reach-end="loadMoreMessages" class="fill-height">
             <message-tile
               v-for="(message, i) in shownConversation.messages"
-              :filepath="filepath"
+              :filepath="currentConversation.filepath"
               :avatarSrc="getAvatar(message.sender_name)"
               :key="'message-' + i"
               :message="message"
@@ -57,7 +57,7 @@
       <v-col cols="3" class="fill-height">
         <v-container fill-height>
           <v-row class="fill-height">
-            <v-btn @click="loadConversation" color="success">Load Conversation</v-btn>
+            <!-- <v-btn @click="loadConversation" color="success">Load Conversation</v-btn> -->
           </v-row>
         </v-container>
       </v-col>
@@ -68,7 +68,6 @@
 <script>
 import ConversationTile from "@/components/ConversationTile";
 import MessageTile from "@/components/MessageTile";
-import loadConversationFromFile from "@/api/loadConversationFromFile";
 import store from "@/store/conversationsStore";
 import Vuex from "vuex";
 
@@ -79,7 +78,6 @@ export default {
     MessageTile
   },
   data: () => ({
-    filepath: "/",
     messagesOffset: 0,
     messagesCount: 30,
     shownConversation: {
@@ -112,24 +110,7 @@ export default {
       this.messagesOffset = 0;
       this.refreshShownMessages();
     },
-    /**
-     * calls LoadConversationFromFile method to select a file
-     * loads Message objects to conversation data
-     * Reverse the order so that older messages are shown first
-     * loads Participant objects to conversation data
-     */
-    loadConversation() {
-      console.log(this.conversations);
-      this.messagesCount = 30;
-      this.messagesOffset = 0;
-      loadConversationFromFile((conv, filepath) => {
-        console.log(conv);
-        if (conv == null) return;
-        this.filepath = filepath;
-        this.addConversation(conv);
-        this.refreshShownMessages();
-      });
-    },
+
     refreshShownMessages() {
       this.$set(
         this.shownConversation,

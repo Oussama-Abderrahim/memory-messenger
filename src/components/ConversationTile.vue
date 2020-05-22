@@ -1,7 +1,9 @@
 <template>
   <v-card class="item" :class="{active: active}" @click="onClick">
     <v-list-item link>
-      <v-list-item-avatar color="grey"></v-list-item-avatar>
+      <v-list-item-avatar color="grey">
+        <v-img :src='item.avatar' alt='P'/>
+      </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title>{{item.title}}</v-list-item-title>
         <v-list-item-subtitle>

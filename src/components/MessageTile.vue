@@ -79,7 +79,9 @@ export default {
      *
      */
     getImgPath(uri) {
-      return this.filepath + uri;
+      console.log(uri);
+      if (uri) return this.filepath + uri;
+      return "";
     },
     getAvatarUrl() {
       if (this.isSenderMe() || !this.avatarSrc) return this.DEFAULT.AVATAR;
