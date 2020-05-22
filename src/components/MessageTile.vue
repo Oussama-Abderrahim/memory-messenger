@@ -1,22 +1,21 @@
 <template>
-  <v-row wrap @click="1" class="message">
-    <v-col cols="2">
-      <div class="message-avatar">
+  <v-container fluid class="message" :class="{right: right, left: !right}">
+    <v-row justify="end" align="end">
+      <v-col :order="right? 1: 0" cols="2" class="avatar" align-content-end>
         <img :src="getAvatarUrl()" width="50" />
-      </div>
-    </v-col>
-    <v-col cols="9">
-      <div
-        class="message-sender"
-        v-html="$getSenderNameHTML(message.sender_name, message.timestamp)"
-      ></div>
-      <!-- White space in message-content is important as it uses white-space:pre-line -->
-      <div class="white--text message-content">{{ message.content }}</div>
-      <div v-for="(photo, i) in message.photos" :key="i" class="message-photo">
-        <img :src="getImgPath(photo.uri)" alt="Photo" />
-      </div>
-    </v-col>
-  </v-row>
+      </v-col>
+      <v-col cols="10">
+        <v-row class="content" :justify="right? 'end': 'start'">
+          <!-- <h4 class="message-content-sender">{{ message.sender_name}}</h4> -->
+          <span class="content-text">{{message.content}}</span>
+          <span class="caption content-time">{{$getFormattedDate(message.timestamp)}}</span>
+        </v-row>
+      </v-col>
+    </v-row>
+    <!-- <div v-for="(photo, i) in message.photos" :key="i" class="message-photo">
+      <img :src="getImgPath(photo.uri)" alt="Photo" />
+    </div>-->
+  </v-container>
 </template>
 
 <script>
@@ -41,14 +40,19 @@ export default {
         "https://lh3.googleusercontent.com/-mGkGQtgsLjA/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3rcAQmY3uszZ1HR-gE4VfvMMJkiSNQ.CMID/s96-c/photo.jpg"
     }
   }),
+  computed: {
+    right() {
+      return this.isSenderMe();
+    }
+  },
   methods: {
     isSenderMe() {
-      return this.message.sender_name == "Oussama Abderrahim";
+      return this.message.sender_name == "user";
     },
     $getSenderNameHTML(sender_name, timestamp) {
       return (
         (sender_name || this.DEFAULT.SENDER_NAME) +
-        ` <span class="grey--text text--lighten-1">${this.$getFormattedDate(
+        ` <span class="grey--text text--lighten-1 caption">${this.$getFormattedDate(
           timestamp
         )}</span>`
       );
@@ -94,8 +98,9 @@ export default {
       return this.filepath + uri;
     },
     getAvatarUrl() {
-      if (this.isSenderMe()) return this.DEFAULT.AVATAR;
-      else return this.avatarSrc;
+      return this.DEFAULT.AVATAR;
+      // if (this.isSenderMe()) return this.DEFAULT.AVATAR;
+      // else return this.avatarSrc;
     }
   }
 };
@@ -106,16 +111,11 @@ $grey: #2980b9; // grey darken-2
 $darkgrey: #424242; // grey darken-3
 $blue: #2980b9;
 
-.message {
+.message.right,
+.message.left {
   width: 100%;
-  background: inherit;
-  border-bottom: 1px grey solid;
-  padding: 10px 0 5px 0;
-  &:hover {
-    background: #525252;
-  }
 
-  &-avatar {
+  .avatar {
     width: 100%;
     text-align: center;
     img {
@@ -123,19 +123,47 @@ $blue: #2980b9;
       border-radius: 50%;
     }
   }
-  &-sender {
-    font-weight: bold;
-    color: $blue;
-  }
 
-  &-content {
-    font-weight: normal;
-    white-space: pre-line;
-  }
+  .content {
+    width: 80%;
 
-  &-photo {
-    img {
-      width: 90%;
+    &-text {
+      border-radius: 20px;
+      padding: 20px;
+      font-weight: normal;
+      white-space: pre-line;
+    }
+
+    &-time {
+      padding-top: 10px;
+    }
+
+    &-photo {
+      img {
+        width: 90%;
+      }
+    }
+  }
+}
+
+.message.right {
+  width: 100%;
+
+  .content {
+    float: right;
+    &-text {
+      border-bottom-right-radius: 0;
+      background-color: var(--v-primary-base);
+    }
+  }
+}
+.message.left {
+  width: 100%;
+
+  .content {
+    &-text {
+      border-bottom-left-radius: 0;
+      background-color: var(--v-secondary_dark-base);
     }
   }
 }

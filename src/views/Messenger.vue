@@ -40,12 +40,16 @@
         </v-container>
       </v-col>
       <!-- Messages Bar -->
-      <v-col cols="6">
-        <v-container></v-container>
+      <v-col cols="6" class="fill-height messenger-messages">
+        <v-container fill-height>
+          <perfect-scrollbar class="fill-height">
+            <message-tile v-for="(message, i) in messages" :key="i" :message="message"></message-tile>
+          </perfect-scrollbar>
+        </v-container>
       </v-col>
       <!-- Informations Bar -->
       <v-col cols="3">
-        <v-container></v-container>
+        <v-container fill-height></v-container>
       </v-col>
     </v-row>
   </v-container>
@@ -53,9 +57,11 @@
 
 <script>
 import ConversationTile from "@/components/ConversationTile";
+import MessageTile from "@/components/MessageTile";
 export default {
   components: {
-    ConversationTile
+    ConversationTile,
+    MessageTile
   },
   data: () => ({
     activeConversation: -1,
@@ -70,6 +76,58 @@ export default {
         preview: "I am ready.",
         time: "6:50pm"
       }
+    ],
+    messages: [
+      {
+        sender_name: "user1",
+        timestamp: new Date(),
+        content:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
+        photos: []
+      },
+      {
+        sender_name: "user",
+        timestamp: new Date(),
+        content:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
+        photos: []
+      },
+      {
+        sender_name: "user1",
+        timestamp: new Date(),
+        content:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
+        photos: []
+      },
+      {
+        sender_name: "user",
+        timestamp: new Date(),
+        content:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
+        photos: []
+      },
+      {
+        sender_name: "user1",
+        timestamp: new Date(),
+        content:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
+        photos: []
+      },
+      {
+        sender_name: "user",
+        timestamp: new Date(),
+        content:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
+        photos: []
+      },
+      {
+        sender_name: "user1",
+        timestamp: new Date(),
+        content:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
+        photos: []
+      },
+      
     ]
   }),
 
@@ -87,14 +145,20 @@ $blue: #222a3f;
 $dark_blue: #1d2437;
 $gray: #969aa6;
 
+.ps {
+  width: 100%;
+}
 .messenger {
   background-color: var(--v-secondary-base);
   width: 100%;
   padding: 0;
 
-  &-conversations {
-    border-right: 1px solid grey;
+  &-conversations,
+  &-messages {
+    border-right: 2px solid var(--v-secondary_dark-base);
+  }
 
+  &-conversations {
     .ps {
       height: 80%;
     }
