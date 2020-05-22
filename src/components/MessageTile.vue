@@ -8,6 +8,9 @@
         <v-row class="content" :justify="right? 'end': 'start'">
           <!-- <h4 class="message-content-sender">{{ message.sender_name}}</h4> -->
           <span class="content-text">{{message.content}}</span>
+        </v-row>
+        <v-row class="content" :justify="right? 'end': 'start'">
+          <!-- <h4 class="message-content-sender">{{ message.sender_name}}</h4> -->
           <span class="caption content-time">{{$getFormattedDate(message.timestamp)}}</span>
         </v-row>
       </v-col>
@@ -47,7 +50,7 @@ export default {
   },
   methods: {
     isSenderMe() {
-      return this.message.sender_name == "user";
+      return this.message.sender_name == "Oussama Abderrahim"; ///TODO: make this configurable
     },
     $getSenderNameHTML(sender_name, timestamp) {
       return (
@@ -132,6 +135,7 @@ $blue: #2980b9;
       padding: 20px;
       font-weight: normal;
       white-space: pre-line;
+      display: block;
     }
 
     &-time {

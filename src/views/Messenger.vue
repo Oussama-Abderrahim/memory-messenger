@@ -43,13 +43,19 @@
       <v-col cols="6" class="fill-height messenger-messages">
         <v-container fill-height>
           <perfect-scrollbar class="fill-height">
-            <message-tile v-for="(message, i) in messages" :key="i" :message="message"></message-tile>
+            <message-tile
+              v-for="(message, i) in shownConversation.messages"
+              :key="i"
+              :message="message"
+            ></message-tile>
           </perfect-scrollbar>
         </v-container>
       </v-col>
       <!-- Informations Bar -->
       <v-col cols="3">
-        <v-container fill-height></v-container>
+        <v-container fill-height>
+          <v-btn @click="loadConversation" color="success">Load Conversation</v-btn>
+        </v-container>
       </v-col>
     </v-row>
   </v-container>
@@ -58,12 +64,23 @@
 <script>
 import ConversationTile from "@/components/ConversationTile";
 import MessageTile from "@/components/MessageTile";
+import loadConversationFromFile from "@/api/loadConversationFromFile";
+import store from "@/store/conversationsStore";
+import Vuex from "vuex";
+
 export default {
+  store,
   components: {
     ConversationTile,
     MessageTile
   },
   data: () => ({
+    filepath: "/",
+    messagesOffset: 0,
+    messagesCount: 30,
+    shownConversation: {
+      messages: []
+    },
     activeConversation: -1,
     conversations: [
       {
@@ -76,63 +93,50 @@ export default {
         preview: "I am ready.",
         time: "6:50pm"
       }
-    ],
-    messages: [
-      {
-        sender_name: "user1",
-        timestamp: new Date(),
-        content:
-          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
-        photos: []
-      },
-      {
-        sender_name: "user",
-        timestamp: new Date(),
-        content:
-          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
-        photos: []
-      },
-      {
-        sender_name: "user1",
-        timestamp: new Date(),
-        content:
-          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
-        photos: []
-      },
-      {
-        sender_name: "user",
-        timestamp: new Date(),
-        content:
-          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
-        photos: []
-      },
-      {
-        sender_name: "user1",
-        timestamp: new Date(),
-        content:
-          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
-        photos: []
-      },
-      {
-        sender_name: "user",
-        timestamp: new Date(),
-        content:
-          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
-        photos: []
-      },
-      {
-        sender_name: "user1",
-        timestamp: new Date(),
-        content:
-          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quia voluptate consequatur quis! Saepe at soluta esse? Alias dicta aliquid ex hic expedita et nesciunt fuga qui, enim perspiciatis magnam magni!",
-        photos: []
-      },
-      
     ]
   }),
-
+  computed: {
+    ...Vuex.mapGetters({
+      conversation: "currentConversation"
+    })
+  },
+  watch: {
+    conversation() {
+      this.shownConversation.messages = this.conversation.messages.slice(
+        0,
+        this.messagesCount
+      );
+    }
+  },
   methods: {
-    sayHello() {}
+    ...Vuex.mapActions(["addConversation"]),
+    /**
+     * calls LoadConversationFromFile method to select a file
+     * loads Message objects to conversation data
+     * Reverse the order so that older messages are shown first
+     * loads Participant objects to conversation data
+     */
+    loadConversation() {
+      this.messagesCount = 30;
+      this.messagesOffset = 0;
+      loadConversationFromFile((conv, filepath) => {
+        console.log(conv);
+        if (conv == null) return;
+        this.filepath = filepath;
+        this.addConversation(conv);
+        this.refreshShownMessages();
+      });
+    },
+    refreshShownMessages() {
+      this.$set(
+        this.shownConversation,
+        "messages",
+        this.conversation.messages.slice(
+          this.messagesOffset,
+          this.messagesOffset + this.messagesCount
+        )
+      );
+    }
   },
 
   mounted() {}
