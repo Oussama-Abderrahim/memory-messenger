@@ -1,12 +1,13 @@
 <template>
   <v-text-field
-    light
-    class="search-bar"
-    flat
-    label="Solo"
-    placeholder="Mot, phrase ou synonyme"
-    solo
-    append-icon="search"
+    outlined
+    dense
+    full-width
+    filled
+    single-line
+    label="Search Here"
+    hide-details
+    prepend-inner-icon="search"
     v-model="query"
     @keyup.enter="search"
   ></v-text-field>
@@ -32,13 +33,15 @@ export default {
     search() {
       let foundIndexes = [];
       this.conversation.messages.forEach((message, i) => {
-        if (message.content && message.content.search(this.query) !== -1) {
+        if (
+          message.content &&
+          message.content.toLowerCase().includes(this.query.toLowerCase())
+        ) {
           /* store only the index of the message */
           foundIndexes.push(i);
         }
       });
-      this.$emit("input", foundIndexes);
-      this.$emit("searched", foundIndexes);
+      this.$emit("search", foundIndexes);
     }
   }
 };

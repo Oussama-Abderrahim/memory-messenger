@@ -43,26 +43,20 @@
       <v-col cols="6" class="fill-height messenger-messages">
         <v-container fill-height>
           <!-- Search Toolbar, appear when button clicked -->
-          <v-toolbar color="secondary_dark" dense floating v-if="showSearch">
-            <v-btn icon small>
+          <v-toolbar color="secondary_dark" dense floating v-if="Search.showSearch">
+            <v-btn icon small @click="nextSearchResult">
               <v-icon>mdi-chevron-down</v-icon>
             </v-btn>
-            <v-btn icon small>
+            <v-btn icon small @click="prevSearchResult">
               <v-icon>mdi-chevron-up</v-icon>
             </v-btn>
-            <v-toolbar-title v-if='searching' class='title ml-3'>Result 1 of 10</v-toolbar-title>
-            <v-text-field
-              v-if="!searching"
-              class="ml-4"
-              outlined
-              dense
-              full-width
-              filled
-              single-line
-              label="Search Here"
-              hide-details
-              prepend-inner-icon="search"
-            ></v-text-field>
+            <v-toolbar-title
+              v-if="Search.searching"
+              class="title ml-3"
+            >Result {{(Search.searchIndex+1)}} of {{Search.foundIndexes.length}}</v-toolbar-title>
+            <messenger-search-bar v-if="!Search.searching" class="ml-4" @search="showSearchResult"></messenger-search-bar>
+            <v-spacer></v-spacer>
+            <v-btn small text @click="closeSearchBar()">done</v-btn>
           </v-toolbar>
 
           <!-- Messages -->
@@ -92,15 +86,18 @@
                 <v-row justify="center" class="mt-3">
                   <h3>{{currentConversation.title || "Conversation Title"}}</h3>
                 </v-row>
+                <v-row justify="center" class="mt-2">
+                  <h5>{{currentConversation.messages.length}} Messages</h5>
+                </v-row>
               </v-container>
 
               <!-- Search Options -->
-              <v-expansion-panels class="mt-10" v-model="searchPanel">
+              <v-expansion-panels class="mt-10" v-model="Search.searchPanel">
                 <v-expansion-panel class="search-options-panel">
                   <v-expansion-panel-header>Advanced search</v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <!-- Search Button -->
-                    <v-btn small block tile text @click="showSearch = !showSearch">
+                    <v-btn small block tile text @click="Search.showSearch = !Search.showSearch">
                       Search in conversation
                       <v-spacer></v-spacer>
                       <v-icon left>mdi-magnify</v-icon>
@@ -108,7 +105,7 @@
 
                     <!-- Start Date Picker  -->
                     <v-menu
-                      v-model="startDatePicker"
+                      v-model="Search.startDatePicker"
                       :close-on-content-click="false"
                       :nudge-right="40"
                       transition="scale-transition"
@@ -117,14 +114,17 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
-                          v-model="startDate"
+                          v-model="Search.startDate"
                           label="Starting Date"
                           prepend-icon="event"
                           readonly
                           v-on="on"
                         ></v-text-field>
                       </template>
-                      <v-date-picker v-model="startDate" @input="startDatePicker = false"></v-date-picker>
+                      <v-date-picker
+                        v-model="Search.startDate"
+                        @input="Search.startDatePicker = false"
+                      ></v-date-picker>
                     </v-menu>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -140,6 +140,7 @@
 <script>
 import ConversationTile from "@/components/ConversationTile";
 import MessageTile from "@/components/MessageTile";
+import MessengerSearchBar from "@/components/MessengerSearchBar";
 import store from "@/store/conversationsStore";
 import Vuex from "vuex";
 
@@ -147,14 +148,20 @@ export default {
   store,
   components: {
     ConversationTile,
-    MessageTile
+    MessageTile,
+    MessengerSearchBar
   },
   data: () => ({
-    searchPanel: 0,
-    showSearch: true,
-    startDate: null,
-    startDatePicker: false,
-    messagesOffset: 0,
+    Search: {
+      searchPanel: 0,
+      showSearch: true,
+      startDate: null,
+      searching: false,
+      startDatePicker: false,
+      searchIndex: 0,
+      foundIndexes: []
+    },
+    messageStartIndex: 0,
     messagesCount: 30,
     shownConversation: {
       messages: []
@@ -183,7 +190,7 @@ export default {
     setConversationIndex(i) {
       this.storeSetConversationIndex(i);
       this.messagesCount = 30;
-      this.messagesOffset = 0;
+      this.messageStartIndex = 0;
       this.refreshShownMessages();
     },
 
@@ -192,8 +199,8 @@ export default {
         this.shownConversation,
         "messages",
         this.currentConversation.messages.slice(
-          this.messagesOffset,
-          this.messagesOffset + this.messagesCount
+          this.messageStartIndex,
+          this.messageStartIndex + this.messagesCount
         )
       );
     },
@@ -202,7 +209,7 @@ export default {
      */
     loadMoreMessages() {
       const LOAD_STEP = 10; // how many message to load each time
-      let lastMessageIndex = this.messagesOffset + this.messagesCount;
+      let lastMessageIndex = this.messageStartIndex + this.messagesCount;
       if (lastMessageIndex >= this.currentConversation.messages.length) return;
 
       let newMessages = this.currentConversation.messages.slice(
@@ -228,6 +235,50 @@ export default {
       } else {
         return null;
       }
+    },
+    /**
+     *
+     */
+    showSearchResult(foundIndexes) {
+      this.Search.foundIndexes = foundIndexes;
+      this.Search.searching = true;
+      console.log(foundIndexes);
+      this.Search.searchIndex = -1;
+      this.nextSearchResult();
+    },
+    closeSearchBar() {
+      this.Search.searching = false;
+      this.Search.showSearch = false;
+      this.messagesCount = 30;
+      this.messageStartIndex = 0;
+      this.refreshShownMessages();
+    },
+    /**
+     * Increment the search index and refreshshownMessages
+     */
+    nextSearchResult() {
+      this.Search.searchIndex++;
+      this.Search.searchIndex %= this.Search.foundIndexes.length; // Back to 0 after last
+      this.messageStartIndex = Math.max(
+        this.Search.foundIndexes[this.Search.searchIndex] - 1,
+        0
+      );
+      this.messagesCount = 30;
+      this.refreshShownMessages();
+    },
+    /**
+     * Decrement the search index and refreshShownMessages
+     */
+    prevSearchResult() {
+      this.Search.searchIndex--;
+      if (this.Search.searchIndex < 0)
+        this.Search.searchIndex = this.Search.foundIndexes.length - 1; // Back to last
+      this.messageStartIndex = Math.max(
+        this.Search.foundIndexes[this.Search.searchIndex] - 1,
+        0
+      );
+      this.messagesCount = 30;
+      this.refreshShownMessages();
     }
   },
 
