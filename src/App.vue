@@ -5,7 +5,7 @@
       <v-toolbar-title>Application</v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-btn icon @click="loadConversation">
+      <v-btn icon  @click="loadConversation">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </v-app-bar>
@@ -69,7 +69,7 @@ body,
   width: 100vw;
   padding: 0;
   margin: 0;
-  overflow: hidden;
+  overflow: hidden !important;
   background-color: var(--v-secondary-base);
 }
 </style>
