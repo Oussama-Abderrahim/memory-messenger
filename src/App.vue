@@ -2,7 +2,7 @@
   <v-app dark id="app">
     <v-app-bar app flat color="secondary_dark">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>Memories Messenger</v-toolbar-title>
       <v-spacer></v-spacer>
 
       <v-btn icon  @click="loadConversation">

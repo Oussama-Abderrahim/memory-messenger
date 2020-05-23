@@ -117,6 +117,7 @@ $blue: #2980b9;
       padding: 20px;
       font-weight: normal;
       white-space: pre-line;
+      word-break: break-word;
       display: block;
     }
 
