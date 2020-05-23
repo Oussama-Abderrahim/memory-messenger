@@ -1,6 +1,10 @@
 # memory-messenger
 
-A facebook offline messenger that takes downloaded facebook messages, and allows to read, tag, edit and search messages by keywords, date and synonyms.
+An offline messenger-like app that takes downloaded facebook data messages (or eventually any other platform), and allows to read, tag, edit and search messages by keywords, date and synonyms. Keep your old friends memories and cringes alive forever.
+
+## Preview
+
+![preview](preview.gif)
 
 ## Project setup
 
@@ -29,6 +33,5 @@ npm run electron:build
 
 - Javascript, Javascript everywhere.
 - [ElectronJs](https://electronjs.org/)
-- [VueJs](https://vuejs.org/) for renderer process.
-- [electron-webpack](https://github.com/electron-userland/electron-webpack) for setting up webpack in the electron environment
-- Visual Studio Code.
+- [VueJs](https://vuejs.org/) for front end.
+- [vue-cli-plugin-electron-builder](https://github.com/nklayman/vue-cli-plugin-electron-builder) A Vue Cli 3/4 plugin for Electron with no required configuration that uses Electron Builder.
