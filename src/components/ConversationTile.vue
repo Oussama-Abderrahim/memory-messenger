@@ -16,10 +16,11 @@
 </template>
 
 <script>
+import Conversation from "@/models/Conversation"
 export default {
   props: {
     item: {
-      type: Object,
+      type: Conversation,
       required: true
     },
     active: {

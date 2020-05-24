@@ -29,18 +29,14 @@
 
 <script>
 import DateFormatter from "@/utils/DateFormatter";
+import Message from "@/models/Message";
 
 export default {
   props: {
     avatarSrc: { type: String, default: "" },
     message: {
-      type: Object,
-      default: () => ({
-        sender_name: "user",
-        timestamp: new Date(),
-        content: "text",
-        photos: []
-      })
+      type: Message,
+      default: () => new Message()
     },
     filepath: { type: String, default: "/" }
   },

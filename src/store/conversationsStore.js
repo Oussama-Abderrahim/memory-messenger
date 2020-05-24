@@ -5,15 +5,6 @@ import Conversation from "@/models/Conversation";
 Vue.use(Vuex);
 
 const state = {
-  DEFAULT: {
-    SENDER_NAME: "utilisateur",
-    AVATAR: "https://www.atlantic-avitaillement.fr/wp-content/uploads/765-default-avatar.png",
-    CONV: {
-      title: "",
-      messages: [],
-      participants: [],
-    },
-  },
   currentIndex: -1,
   conversations: [],
 };
@@ -30,7 +21,7 @@ const mutations = {
 
 const getters = {
   currentConversation: (state) =>
-    state.conversations.length > 0 ? state.conversations[state.currentIndex] : state.DEFAULT.CONV,
+    state.conversations.length > 0 ? state.conversations[state.currentIndex] : new Conversation(),
   conversations: (state) => state.conversations,
 };
 
