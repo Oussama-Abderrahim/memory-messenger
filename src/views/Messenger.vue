@@ -151,7 +151,7 @@ export default {
   data: () => ({
     Search: {
       searchPanel: 0,
-      showSearch: true,
+      showSearch: false,
       startDate: null,
       searching: false,
       startDatePicker: false,
@@ -173,10 +173,7 @@ export default {
   },
   watch: {
     currentConversation() {
-      this.shownConversation.messages = this.currentConversation.messages.slice(
-        0,
-        this.messagesCount
-      );
+      this.closeSearchBar();
     }
   },
   methods: {
@@ -184,14 +181,18 @@ export default {
       addConversation: "addConversation",
       storeSetConversationIndex: "setConversationIndex"
     }),
+    /**
+     *
+     */
     setConversationIndex(i) {
       this.closeSearchBar();
       this.storeSetConversationIndex(i);
       this.resetStartIndex(0);
     },
-
+    /**
+     *
+     */
     refreshShownMessages() {
-      console.log("refresh");
       this.$set(
         this.shownConversation,
         "messages",
@@ -234,6 +235,9 @@ export default {
         return null;
       }
     },
+    /**
+     *
+     */
     searchByDate() {
       this.Search.startDatePicker = false;
       let startDate_timestamp = Date.parse(this.Search.startDate);
@@ -269,6 +273,9 @@ export default {
       this.Search.searchIndex = -1;
       this.nextSearchResult();
     },
+    /**
+     *
+     */
     closeSearchBar() {
       this.Search.searching = false;
       this.Search.showSearch = false;
