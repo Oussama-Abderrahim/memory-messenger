@@ -121,10 +121,7 @@
                           v-on="on"
                         ></v-text-field>
                       </template>
-                      <v-date-picker
-                        v-model="Search.startDate"
-                        @input="Search.startDatePicker = false"
-                      ></v-date-picker>
+                      <v-date-picker v-model="Search.startDate" @input="searchByDate()"></v-date-picker>
                     </v-menu>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -188,6 +185,7 @@ export default {
       storeSetConversationIndex: "setConversationIndex"
     }),
     setConversationIndex(i) {
+      this.closeSearchBar();
       this.storeSetConversationIndex(i);
       this.messagesCount = 30;
       this.messageStartIndex = 0;
@@ -195,6 +193,7 @@ export default {
     },
 
     refreshShownMessages() {
+      console.log("refresh");
       this.$set(
         this.shownConversation,
         "messages",
@@ -208,6 +207,7 @@ export default {
      *
      */
     loadMoreMessages() {
+      console.log("load more messages");
       const LOAD_STEP = 10; // how many message to load each time
       let lastMessageIndex = this.messageStartIndex + this.messagesCount;
       if (lastMessageIndex >= this.currentConversation.messages.length) return;
@@ -236,12 +236,29 @@ export default {
         return null;
       }
     },
+    searchByDate() {
+      this.Search.startDatePicker = false;
+      let startDate_timestamp = Date.parse(this.Search.startDate);
+      let index = this.currentConversation.messages.length - 1;
+      for (let i in this.currentConversation.messages) {
+        if (
+          this.currentConversation.messages[i].timestamp >= startDate_timestamp
+        ) {
+          index = i;
+          break;
+        }
+      }
+      console.log(index);
+
+      this.showSearchResult([index]);
+    },
     /**
      *
      */
     showSearchResult(foundIndexes) {
       this.Search.foundIndexes = foundIndexes;
       this.Search.searching = true;
+      this.Search.showSearch = true;
       console.log(foundIndexes);
       this.Search.searchIndex = -1;
       this.nextSearchResult();
