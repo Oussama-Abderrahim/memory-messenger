@@ -56,7 +56,7 @@
             >Result {{(Search.searchIndex+1)}} of {{Search.foundIndexes.length}}</v-toolbar-title>
             <messenger-search-bar v-if="!Search.searching" class="ml-4" @search="showSearchResult"></messenger-search-bar>
             <v-spacer></v-spacer>
-            <v-btn small text @click="closeSearchBar()">done</v-btn>
+            <v-btn small text v-if="Search.searching" @click="closeSearchBar()">done</v-btn>
           </v-toolbar>
 
           <!-- Messages -->
@@ -187,9 +187,7 @@ export default {
     setConversationIndex(i) {
       this.closeSearchBar();
       this.storeSetConversationIndex(i);
-      this.messagesCount = 30;
-      this.messageStartIndex = 0;
-      this.refreshShownMessages();
+      this.resetStartIndex(0);
     },
 
     refreshShownMessages() {
@@ -255,6 +253,14 @@ export default {
     /**
      *
      */
+    resetStartIndex(startIndex = 0) {
+      this.messagesCount = 30;
+      this.messageStartIndex = startIndex;
+      this.refreshShownMessages();
+    },
+    /**
+     *
+     */
     showSearchResult(foundIndexes) {
       this.Search.foundIndexes = foundIndexes;
       this.Search.searching = true;
@@ -266,9 +272,7 @@ export default {
     closeSearchBar() {
       this.Search.searching = false;
       this.Search.showSearch = false;
-      this.messagesCount = 30;
-      this.messageStartIndex = 0;
-      this.refreshShownMessages();
+      this.resetStartIndex(0);
     },
     /**
      * Increment the search index and refreshshownMessages
@@ -280,8 +284,7 @@ export default {
         this.Search.foundIndexes[this.Search.searchIndex] - 1,
         0
       );
-      this.messagesCount = 30;
-      this.refreshShownMessages();
+      this.resetStartIndex(this.messageStartIndex);
     },
     /**
      * Decrement the search index and refreshShownMessages
@@ -294,8 +297,7 @@ export default {
         this.Search.foundIndexes[this.Search.searchIndex] - 1,
         0
       );
-      this.messagesCount = 30;
-      this.refreshShownMessages();
+      this.resetStartIndex(this.messageStartIndex);
     }
   },
 
