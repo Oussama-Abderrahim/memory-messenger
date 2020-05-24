@@ -12,7 +12,7 @@
         <!-- Message Photos ///TODO Add stickers -->
         <v-row class="content" :justify="right? 'end': 'start'" v-if="message.photos">
           <span class="content-photo" v-for="(photo, i) in message.photos" :key="i">
-            <v-img :src="getImgPath(photo.uri)" :alt="`${message.sender_name} has sent a photo`" />
+            <v-img :src="getImgPath(photo)" :alt="`${message.sender_name} has sent a photo`" />
           </span>
         </v-row>
         <!-- Message Timestamp -->
@@ -78,9 +78,8 @@ export default {
     /**
      *
      */
-    getImgPath(uri) {
-      console.log(uri);
-      if (uri) return this.filepath + uri;
+    getImgPath(photo) {
+      if (photo && photo.uri) return this.filepath + photo.uri;
       return "";
     },
     getAvatarUrl() {
