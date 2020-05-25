@@ -1,6 +1,6 @@
 <template>
   <v-container fill-height class="messenger" fluid mx-6 py-0>
-    <v-row class="fill-height" dense>
+    <v-row class="fill-height" dense no-gutters>
       <!-- Conversations Bar -->
       <v-col cols="3" class="fill-height messenger-conversations">
         <v-container fill-height>
@@ -16,9 +16,7 @@
                 prepend-inner-icon="search"
               ></v-text-field>
               <v-row dense>
-                <v-col cols="7">Recent Chats</v-col>
-                <v-spacer></v-spacer>
-                <v-col cols="3">New Chat</v-col>
+                <v-col cols="12">Conversations list</v-col>
               </v-row>
               <!-- Conversations Lists -->
               <perfect-scrollbar
@@ -72,7 +70,7 @@
         </v-container>
       </v-col>
       <!-- Informations Bar -->
-      <v-col cols="3" class="fill-height messenger-informations pr-5">
+      <v-col cols="3" class="fill-height messenger-informations pr-10">
         <v-container fill-height mx-3 fluid>
           <v-row class="fill-height" justify="start">
             <v-col cols="12" class="text-center">

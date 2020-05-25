@@ -2,7 +2,15 @@
   <v-container fluid class="message" :class="{right: right, left: !right}">
     <v-row justify="end" align="end">
       <v-col :order="right? 1: 0" cols="2" class="avatar" align-content-end>
-        <img :src="getAvatarUrl()" width="50" />
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-avatar size="50" color="grey" v-on="on">
+              <img v-if="hasAvatar()" :src="getAvatarUrl()" />
+              <span v-else>{{message.sender_name[0]}}</span>
+            </v-avatar>
+          </template>
+          <span>{{message.sender_name}}</span>
+        </v-tooltip>
       </v-col>
       <v-col cols="10">
         <!-- Message Content -->
@@ -78,8 +86,11 @@ export default {
       if (photo && photo.uri) return this.filepath + photo.uri;
       return "";
     },
+    hasAvatar() {
+      return this.avatarSrc != "" || this.isSenderMe();
+    },
     getAvatarUrl() {
-      if (this.isSenderMe() || !this.avatarSrc) return this.DEFAULT.AVATAR;
+      if (!this.hasAvatar() || this.isSenderMe()) return this.DEFAULT.AVATAR;
       else return this.avatarSrc;
     }
   }
