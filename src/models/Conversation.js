@@ -60,6 +60,23 @@ class Conversation {
   }
 
   /**
+   * Return a list of conversation photos with their indexes
+   */
+  get photos() {
+    return this.messages
+      .map((message, i) => {
+        if (message.photos) {
+          return {
+            index: i,
+            src: this.filepath + message.photos[0].uri,
+          };
+        }
+        return null;
+      })
+      .filter((m) => m != null);
+  }
+
+  /**
    * Process the messages in 3 steps :
    * - Reverse the order so that the oldest appears first
    * - Concatenate successive messages sent by the same user

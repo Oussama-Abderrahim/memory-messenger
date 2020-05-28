@@ -96,9 +96,8 @@
                   <v-expansion-panel-content>
                     <!-- Search Button -->
                     <v-btn small block tile text @click="Search.showSearch = !Search.showSearch">
-                      Search in conversation
+                      <v-icon left>mdi-magnify</v-icon>Search in conversation
                       <v-spacer></v-spacer>
-                      <v-icon left>mdi-magnify</v-icon>
                     </v-btn>
 
                     <!-- Start Date Picker  -->
@@ -121,6 +120,17 @@
                       </template>
                       <v-date-picker v-model="Search.startDate" @input="searchByDate()"></v-date-picker>
                     </v-menu>
+
+                    <!-- Photo Gallery Button -->
+                    <v-btn small block tile text @click.stop="showPhotoGallery = true">
+                      <v-icon left>mdi-folder-multiple-image</v-icon>Show conversation Photos
+                      <v-spacer></v-spacer>
+                    </v-btn>
+
+                    <photo-gallery-dialog
+                      :images="getCurrentConversationPhotos()"
+                      v-model="showPhotoGallery"
+                    ></photo-gallery-dialog>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
@@ -136,12 +146,14 @@
 import ConversationTile from "@/components/ConversationTile";
 import MessageTile from "@/components/MessageTile";
 import MessengerSearchBar from "@/components/MessengerSearchBar";
+import PhotoGalleryDialog from "@/components/PhotoGalleryDialog";
 import store from "@/store/conversationsStore";
 import Vuex from "vuex";
 
 export default {
   store,
   components: {
+    PhotoGalleryDialog,
     ConversationTile,
     MessageTile,
     MessengerSearchBar
@@ -156,6 +168,16 @@ export default {
       searchIndex: 0,
       foundIndexes: []
     },
+    showPhotoGallery: false,
+    images: [
+      "https://picsum.photos/500/300?image=2",
+      "https://picsum.photos/500/300?image=2",
+      "https://picsum.photos/500/300?image=2",
+      "https://picsum.photos/500/300?image=2",
+      "https://picsum.photos/500/300?image=2",
+      "https://picsum.photos/500/300?image=2",
+      "https://picsum.photos/500/300?image=2"
+    ],
     messageStartIndex: 0,
     messagesCount: 30,
     shownConversation: {
@@ -303,6 +325,15 @@ export default {
         0
       );
       this.resetStartIndex(this.messageStartIndex);
+    },
+    /**
+     *
+     */
+    getCurrentConversationPhotos() {
+      if (this.currentConversation.messages) {
+        return this.currentConversation.photos;
+      }
+      return [];
     }
   },
 

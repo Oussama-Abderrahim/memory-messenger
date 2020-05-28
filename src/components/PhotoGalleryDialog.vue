@@ -6,7 +6,7 @@
           <v-row>
             <v-col v-for="(image, i) in images" :key="i" class="d-flex child-flex" cols="4">
               <v-card flat tile class="d-flex">
-                <v-img :src="image" aspect-ratio="1" class="grey lighten-2 image">
+                <v-img :src="image.src" aspect-ratio="1" class="grey lighten-2 image">
                   <template v-slot:placeholder>
                     <v-row class="fill-height ma-0" align="center" justify="center">
                       <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
@@ -23,11 +23,7 @@
 </template>
 
 <script>
-import PerfectScrollbar from "@/components/PhotoGalleryDialog";
 export default {
-  components: {
-    PerfectScrollbar
-  },
   props: {
     value: {
       type: Boolean,
@@ -35,7 +31,7 @@ export default {
     },
     images: {
       type: Array,
-      default: () => []
+      default: () => ({ index: 0, src: "" })
     }
   },
   data: () => ({}),
@@ -43,6 +39,9 @@ export default {
     value() {
       this.$emit("input", this.value);
     }
+  },
+  mounted() {
+    console.log(this.images);
   }
 };
 </script>
