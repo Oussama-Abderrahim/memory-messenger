@@ -58,7 +58,11 @@
           </v-toolbar>
 
           <!-- Messages -->
-          <perfect-scrollbar @ps-y-reach-end="loadMoreMessages" class="fill-height">
+          <perfect-scrollbar
+            ref="messengerScrollbar"
+            @ps-y-reach-end="loadMoreMessages"
+            class="fill-height"
+          >
             <message-tile
               v-for="(message, i) in shownConversation.messages"
               :filepath="currentConversation.filepath"
@@ -200,6 +204,10 @@ export default {
       this.closeSearchBar();
       this.storeSetConversationIndex(i);
       this.resetStartIndex(0);
+      this.scrollMessagesToTop();
+    },
+    scrollMessagesToTop() {
+      this.$refs.messengerScrollbar.$el.scrollTop = 0;
     },
     /**
      *
@@ -277,6 +285,9 @@ export default {
       this.messagesCount = 30;
       this.messageStartIndex = startIndex;
       this.refreshShownMessages();
+      this.$nextTick(() => {
+        this.scrollMessagesToTop();
+      });
     },
     /**
      *
