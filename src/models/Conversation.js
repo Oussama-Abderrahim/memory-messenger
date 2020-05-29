@@ -63,17 +63,21 @@ class Conversation {
    * Return a list of conversation photos with their indexes
    */
   get photos() {
-    return this.messages
-      .map((message, i) => {
-        if (message.photos) {
-          return {
-            index: i,
-            src: this.filepath + message.photos[0].uri,
-          };
-        }
-        return null;
-      })
-      .filter((m) => m != null);
+    if (!this.conversationPhotos) {
+      this.conversationPhotos = this.messages
+        .map((message, i) => {
+          if (message.photos) {
+            return {
+              index: i,
+              src: this.filepath + message.photos[0].uri,
+            };
+          }
+          return null;
+        })
+        .filter((m) => m != null);
+    }
+
+    return this.conversationPhotos;
   }
 
   /**
