@@ -5,7 +5,7 @@
         <v-container fluid>
           <v-row>
             <v-col v-for="(image, i) in shownImages" :key="i" class="d-flex child-flex" cols="4">
-              <v-card flat tile class="d-flex">
+              <v-card flat tile class="d-flex" @click.stop="onImageClick(image.index)">
                 <v-img :src="image.src" aspect-ratio="1" class="grey lighten-2 image">
                   <template v-slot:placeholder>
                     <v-row class="fill-height ma-0" align="center" justify="center">
@@ -56,12 +56,18 @@ export default {
       if (this.imageCount >= this.images.length) return;
       this.shownImages = this.images.slice(0, this.imageCount + 6);
       this.imageCount = this.shownImages.length;
+    },
+    onImageClick(i) {
+      this.$emit("imageClick", i);
     }
   }
 };
 </script>
 
 <style lang='scss' scoped>
+.image:hover {
+  border: 2px solid grey;
+}
 .photo-gallery {
   .ps {
     height: 400px;

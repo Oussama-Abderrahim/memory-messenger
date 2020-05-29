@@ -20,8 +20,8 @@ Design inspired from [Ashfak Ahmed Sayem](https://dribbble.com/shots/6304417-Cus
 - [ ] **Participants** : Set a custom avatar to loaded conversations' participants
 - [x] **Search** : find messages by words and jump between results
 - [x] **Search** : find messages by start date
-- [ ] **Photo Gallery** : Show all conversation photos in a grid list
-- [ ] **Photo Gallery** : Jump to message on photo click
+- [X] **Photo Gallery** : Show all conversation photos in a grid list
+- [X] **Photo Gallery** : Jump to message on photo click
 - [ ] **Encoding** : Check and handle correct file encodings
 
 ## Project setup

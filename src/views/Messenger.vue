@@ -128,7 +128,8 @@
                     </v-btn>
 
                     <photo-gallery-dialog
-                      :images="getCurrentConversationPhotos()"
+                      @imageClick="imageClick"
+                      :images="currentConversation.photos"
                       v-model="showPhotoGallery"
                     ></photo-gallery-dialog>
                   </v-expansion-panel-content>
@@ -169,15 +170,6 @@ export default {
       foundIndexes: []
     },
     showPhotoGallery: false,
-    images: [
-      "https://picsum.photos/500/300?image=2",
-      "https://picsum.photos/500/300?image=2",
-      "https://picsum.photos/500/300?image=2",
-      "https://picsum.photos/500/300?image=2",
-      "https://picsum.photos/500/300?image=2",
-      "https://picsum.photos/500/300?image=2",
-      "https://picsum.photos/500/300?image=2"
-    ],
     messageStartIndex: 0,
     messagesCount: 30,
     shownConversation: {
@@ -254,6 +246,10 @@ export default {
       } else {
         return null;
       }
+    },
+    imageClick(i) {
+      this.showPhotoGallery = false;
+      this.showSearchResult([i]);
     },
     /**
      *
