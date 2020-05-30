@@ -99,7 +99,7 @@
                   <v-expansion-panel-header>Advanced search</v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <!-- Search Button -->
-                    <v-btn small block tile text @click="Search.showSearch = !Search.showSearch">
+                    <v-btn small block tile text @click="Search.showSearch = !Search.showSearch; Search.searching=false">
                       <v-icon left>mdi-magnify</v-icon>Search in conversation
                       <v-spacer></v-spacer>
                     </v-btn>
@@ -296,9 +296,11 @@ export default {
       this.Search.foundIndexes = foundIndexes;
       this.Search.searching = true;
       this.Search.showSearch = true;
-      console.log(foundIndexes);
       this.Search.searchIndex = -1;
-      this.nextSearchResult();
+      if (foundIndexes.length) {
+        console.log(foundIndexes);
+        this.nextSearchResult();
+      }
     },
     /**
      *
@@ -312,6 +314,7 @@ export default {
      * Increment the search index and refreshshownMessages
      */
     nextSearchResult() {
+      if (this.Search.foundIndexes.length == 0) return;
       this.Search.searchIndex++;
       this.Search.searchIndex %= this.Search.foundIndexes.length; // Back to 0 after last
       this.messageStartIndex = Math.max(
@@ -324,6 +327,7 @@ export default {
      * Decrement the search index and refreshShownMessages
      */
     prevSearchResult() {
+      if (this.Search.foundIndexes.length == 0) return;
       this.Search.searchIndex--;
       if (this.Search.searchIndex < 0)
         this.Search.searchIndex = this.Search.foundIndexes.length - 1; // Back to last
