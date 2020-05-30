@@ -5,7 +5,7 @@
       <v-toolbar-title>Memories Messenger</v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-btn icon  @click="loadConversation">
+      <v-btn icon @click="loadConversation">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </v-app-bar>
@@ -19,7 +19,7 @@
 <script>
 import Vuex from "vuex";
 import store from "@/store/conversationsStore";
-import loadConversationFromFile from "@/api/loadConversationFromFile";
+import FileSystemService from "@/api/FileSystemService";
 
 export default {
   store: store,
@@ -45,7 +45,7 @@ export default {
      * loads Participant objects to conversation data
      */
     loadConversation() {
-      loadConversationFromFile((conv, filepath) => {
+      FileSystemService.loadJsonFile((conv, filepath) => {
         console.log(conv);
         if (conv == null) return;
         this.addConversation({ conv, filepath });
