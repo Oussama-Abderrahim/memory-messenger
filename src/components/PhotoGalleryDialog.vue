@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="showDialog" width="600">
     <v-card class="photo-gallery">
-      <perfect-scrollbar @ps-y-reach-end="showMoreImages">
+      <perfect-scrollbar ref="scrollbar" v-if="imageCount" @ps-y-reach-end="showMoreImages">
         <v-container fluid>
           <v-row>
             <v-col v-for="(image, i) in shownImages" :key="i" class="d-flex child-flex" cols="4">
@@ -15,6 +15,7 @@
                 </v-img>
               </v-card>
             </v-col>
+            <!-- <div v-if="shownImages.length" v-observe-visibility="onScrollBottom"></div> -->
           </v-row>
         </v-container>
       </perfect-scrollbar>
@@ -47,11 +48,32 @@ export default {
         this.imageCount = this.shownImages.length;
       }
     },
+    images() {
+      if (
+        !(
+          this.images &&
+          this.shownImages &&
+          this.shownImages[0] == this.images[0]
+        )
+      ) {
+        this.imageCount = 0;
+        // this.backTop();
+        this.$nextTick(() => {
+          this.showMoreImages();
+        });
+      }
+    },
     showDialog() {
       this.$emit("input", this.showDialog);
     }
   },
   methods: {
+    backTop() {
+      if (this.showDialog) this.$refs.scrollbar.$el.scrollTop = 0;
+    },
+    onScrollBottom(visible) {
+      if (visible) this.showMoreImages();
+    },
     showMoreImages() {
       if (this.imageCount >= this.images.length) return;
       this.shownImages = this.images.slice(0, this.imageCount + 6);
