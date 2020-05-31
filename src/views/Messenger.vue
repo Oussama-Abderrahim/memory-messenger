@@ -39,29 +39,34 @@
       </v-col>
       <!-- Messages Bar -->
       <v-col cols="6" class="fill-height messenger-messages">
+        <!-- Search Toolbar, appear when button clicked -->
+        <v-toolbar
+          color="secondary_dark messenger-messages-toolbar"
+          dense
+          floating
+          v-if="Search.showSearch"
+        >
+          <v-btn icon small @click="nextSearchResult">
+            <v-icon>mdi-chevron-down</v-icon>
+          </v-btn>
+          <v-btn icon small @click="prevSearchResult">
+            <v-icon>mdi-chevron-up</v-icon>
+          </v-btn>
+          <v-toolbar-title
+            v-if="Search.searching"
+            class="title ml-3"
+          >Result {{(Search.searchIndex+1)}} of {{Search.foundIndexes.length}}</v-toolbar-title>
+          <messenger-search-bar v-if="!Search.searching" class="ml-4" @search="showSearchResult"></messenger-search-bar>
+          <v-spacer></v-spacer>
+          <v-btn small text v-if="Search.searching" @click="closeSearchBar()">done</v-btn>
+        </v-toolbar>
         <v-container fill-height>
-          <!-- Search Toolbar, appear when button clicked -->
-          <v-toolbar color="secondary_dark" dense floating v-if="Search.showSearch">
-            <v-btn icon small @click="nextSearchResult">
-              <v-icon>mdi-chevron-down</v-icon>
-            </v-btn>
-            <v-btn icon small @click="prevSearchResult">
-              <v-icon>mdi-chevron-up</v-icon>
-            </v-btn>
-            <v-toolbar-title
-              v-if="Search.searching"
-              class="title ml-3"
-            >Result {{(Search.searchIndex+1)}} of {{Search.foundIndexes.length}}</v-toolbar-title>
-            <messenger-search-bar v-if="!Search.searching" class="ml-4" @search="showSearchResult"></messenger-search-bar>
-            <v-spacer></v-spacer>
-            <v-btn small text v-if="Search.searching" @click="closeSearchBar()">done</v-btn>
-          </v-toolbar>
-
           <!-- Messages -->
           <perfect-scrollbar
             ref="messengerScrollbar"
             @ps-y-reach-end="loadMoreMessages"
             class="fill-height"
+            v-if="shownConversation.messages.length"
           >
             <message-tile
               v-for="(message, i) in shownConversation.messages"
@@ -94,12 +99,18 @@
               </v-container>
 
               <!-- Search Options -->
-              <v-expansion-panels class="mt-10" v-model="Search.searchPanel">
+              <v-expansion-panels class="mt-10" v-model="Panels.searchPanel">
                 <v-expansion-panel class="search-options-panel">
                   <v-expansion-panel-header>Advanced search</v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <!-- Search Button -->
-                    <v-btn small block tile text @click="Search.showSearch = !Search.showSearch; Search.searching=false">
+                    <v-btn
+                      small
+                      block
+                      tile
+                      text
+                      @click="Search.showSearch = !Search.showSearch; Search.searching=false"
+                    >
                       <v-icon left>mdi-magnify</v-icon>Search in conversation
                       <v-spacer></v-spacer>
                     </v-btn>
@@ -122,11 +133,11 @@
                           v-on="on"
                         ></v-text-field>
                       </template>
-                      <v-date-picker v-model="Search.startDate" @input="searchByDate()"></v-date-picker>
+                      <v-date-picker v-model="Search.startDate" @input="searchByDate()" />
                     </v-menu>
 
                     <!-- Photo Gallery Button -->
-                    <v-btn small block tile text @click.stop="showPhotoGallery = true">
+                    <v-btn small block tile text @click.stop="Dialogs.showPhotoGallery = true">
                       <v-icon left>mdi-folder-multiple-image</v-icon>Show conversation Photos
                       <v-spacer></v-spacer>
                     </v-btn>
@@ -134,8 +145,22 @@
                     <photo-gallery-dialog
                       @imageClick="imageClick"
                       :images="currentConversation.photos"
-                      v-model="showPhotoGallery"
+                      v-model="Dialogs.showPhotoGallery"
                     ></photo-gallery-dialog>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+
+              <!-- Edit Options -->
+              <v-expansion-panels class="mt-10" v-model="Panels.editPanel">
+                <v-expansion-panel class="search-options-panel">
+                  <v-expansion-panel-header>Edit conversations</v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <!-- Edit Nicknames -->
+                    <v-btn small block tile text>
+                      <v-icon left>mdi-pencil</v-icon>Edit Nicknames
+                      <v-spacer></v-spacer>
+                    </v-btn>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
@@ -165,7 +190,6 @@ export default {
   },
   data: () => ({
     Search: {
-      searchPanel: 0,
       showSearch: false,
       startDate: null,
       searching: false,
@@ -173,7 +197,13 @@ export default {
       searchIndex: 0,
       foundIndexes: []
     },
-    showPhotoGallery: false,
+    Dialogs: {
+      showPhotoGallery: false
+    },
+    Panels: {
+      searchPanel: 0,
+      editPanel: 0
+    },
     messageStartIndex: 0,
     messagesCount: 30,
     shownConversation: {
@@ -256,7 +286,7 @@ export default {
       }
     },
     imageClick(i) {
-      this.showPhotoGallery = false;
+      this.Dialogs.showPhotoGallery = false;
       this.showSearchResult([i]);
     },
     /**
@@ -352,7 +382,7 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 .ps {
   width: 100%;
 }
@@ -365,6 +395,10 @@ export default {
   &-conversations,
   &-messages {
     border-right: 2px solid var(--v-secondary_dark-base);
+
+    &-toolbar {
+      width: 100%;
+    }
   }
 
   &-conversations {
