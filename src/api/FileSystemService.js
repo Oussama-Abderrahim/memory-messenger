@@ -8,7 +8,7 @@ const { dialog } = require("electron").remote;
  * @param {string} folderpath - Path to the read folder
  */
 
- /**
+/**
  * @class
  * @classdesc A service for external files reading and parsing
  */
@@ -21,6 +21,17 @@ class FileSystemService {
    */
   loadJsonFile(cb) {
     this._readFileFromChooser((data, filepath) => {
+      cb(JSON.parse(data), filepath);
+    });
+  }
+
+  /**
+   * Read and parse a JSON file in the given path
+   * @param {FileSystemService~ReadFileCb} cb Callback that takes two Params:
+   */
+  readJsonFile(filepath, cb) {
+    console.log(filepath);
+    fs.readFile(filepath, "utf8", (err, data) => {
       cb(JSON.parse(data), filepath);
     });
   }
