@@ -10,13 +10,17 @@ class Conversation {
    *
    * @param {Object} conv - conversation loaded from the original data
    * @param {string} conv.title - Title conversation from the original data
+   * @param {string} conv.thread_path - Thread path will be considered as an ID
    * @param {Object[]} conv.participants - participants list from the original data
    * @param {Object[]} conv.messages - original messages array from the original data
    * @param {string} conv.filepath - absolute path of the loaded folder (containing .json file and media attachements)
    */
-  constructor({ title = "", filepath = ".", messages = [], participants = [] } = {}) {
+  constructor({ title = "", filepath = ".", thread_path = "", messages = [], participants = [] } = {}) {
     /** @type {string} avatar - Url of the conversation picture (usually the friend's avatar) */
     this.avatar = "";
+
+    /** @type {string} id - A unique id to identify this conversation from file path */
+    this.id = thread_path;
 
     /** @type {string} title - Title of the conversation (usually the friend's or group name) */
     this.title = title;

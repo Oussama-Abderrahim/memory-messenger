@@ -25,7 +25,8 @@
               >
                 <!-- Single Card -->
                 <conversation-tile
-                  @click="setConversationIndex(i); refreshShownMessages()"
+                  @click="setConversationIndex(i);"
+                  @close="removeConversation(item.id)"
                   v-for="(item,i) in conversations"
                   :active="item == currentConversation"
                   :item="item"
@@ -218,13 +219,14 @@ export default {
     })
   },
   watch: {
-    currentConversation() {
-      this.closeSearchBar();
+    currentConversation(newVal, oldVal) {
+      if (newVal != oldVal) this.resetStartIndex(0);
     }
   },
   methods: {
     ...Vuex.mapActions({
       addConversation: "addConversation",
+      removeConversation: "removeConversation",
       storeSetConversationIndex: "setConversationIndex"
     }),
     /**
@@ -237,7 +239,8 @@ export default {
       this.scrollMessagesToTop();
     },
     scrollMessagesToTop() {
-      this.$refs.messengerScrollbar.$el.scrollTop = 0;
+      if (this.$refs.messengerScrollbar)
+        this.$refs.messengerScrollbar.$el.scrollTop = 0;
     },
     /**
      *
@@ -338,7 +341,7 @@ export default {
     closeSearchBar() {
       this.Search.searching = false;
       this.Search.showSearch = false;
-      this.resetStartIndex(0);
+      if (this.currentConversation.messages) this.resetStartIndex(0);
     },
     /**
      * Increment the search index and refreshshownMessages
