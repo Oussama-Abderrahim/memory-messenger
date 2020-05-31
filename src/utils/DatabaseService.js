@@ -15,86 +15,86 @@ const workerPath = getWorkerPath();
 
 const conversationsTableSchema = {
   name: "conversations",
-  columns: [
-    {
-      name: "id",
+  columns: {
+    uid: {
       primaryKey: true,
       autoIncrement: true,
     },
-    {
-      name: "time",
-      notNull: true,
+    id: {
       dataType: DATA_TYPE.String,
     },
-    {
-      name: "preview",
+    title: {
       dataType: DATA_TYPE.String,
       default: "",
     },
-    {
-      name: "filepath",
-      notNull: true,
+    time: {
       dataType: DATA_TYPE.String,
     },
-  ],
+    preview: {
+      dataType: DATA_TYPE.String,
+      default: "",
+    },
+    filepath: {
+      dataType: DATA_TYPE.String,
+    },
+  },
 };
 
 const userConversationTableSchema = {
   name: "userConversation",
-  columns: [
-    {
-      name: "id_user",
+  columns: {
+    id_user: {
       dataType: DATA_TYPE.Number,
     },
-    {
-      name: "id_conversation",
+    id_conversation: {
       dataType: DATA_TYPE.Number,
     },
-  ],
+  },
 };
 
 const usersTableSchema = {
   name: "users",
-  columns: [
-    {
-      name: "id",
+  columns: {
+    id: {
       primaryKey: true,
       autoIncrement: true,
     },
-    {
-      name: "avatar",
+    avatar: {
       notNull: true,
       dataType: DATA_TYPE.String,
     },
-    {
-      name: "name",
+    name: {
       notNull: true,
       dataType: DATA_TYPE.String,
     },
-  ],
+  },
 };
 
-const DB_NAME = "memory_messenger_db";
+const DB_NAME = "memory_db";
 
 const DB_SCHEMA = {
   name: DB_NAME,
-  tables: [conversationsTableSchema, usersTableSchema, userConversationTableSchema],
+  tables: [conversationsTableSchema, userConversationTableSchema, usersTableSchema],
 };
 
+let instance = null;
 /**
  * @class
  * @classdesc A service to handle IndexedDB database queries
  */
 class DatabaseService {
   constructor(db_schema = DB_SCHEMA) {
-    this.connection = new JsStore.Instance(new Worker(workerPath));
-    this.initiated = false;
-    this.db_schema = db_schema;
+    if (!instance) {
+      instance = this;
+      this.connection = new JsStore.Connection(new Worker(workerPath));
+      this.initiated = false;
+      this.db_schema = db_schema;
+    }
+
+    return instance;
   }
 
   async connect() {
-    console.log(this.connection);
-
     try {
       const isDbCreated = await this.connection.initDb(this.db_schema);
       if (isDbCreated === true) {
@@ -106,6 +106,31 @@ class DatabaseService {
     } catch (ex) {
       console.error(ex);
     }
+  }
+
+  async insertConversation(conversation) {
+    try {
+      return await this.connection.insert({
+        into: conversationsTableSchema.name,
+        values: [
+          {
+            id: conversation.id,
+            title: conversation.title,
+            time: conversation.time,
+            preview: conversation.preview,
+            filepath: conversation.filepath,
+          },
+        ],
+      });
+    } catch (ex) {
+      console.error("Inserting ", ex);
+    }
+  }
+
+  async selectConversations() {
+    return await this.connection.select({
+      from: conversationsTableSchema.name,
+    });
   }
 }
 
