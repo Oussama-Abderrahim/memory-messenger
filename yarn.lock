@@ -5959,6 +5959,11 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
+jsstore@^3.9.3:
+  version "3.9.3"
+  resolved "https://registry.yarnpkg.com/jsstore/-/jsstore-3.9.3.tgz#ac6bbfb72635db4a014049bd02ca6adbaf3e3009"
+  integrity sha512-PNdSyhyBusp6u6/no7MDxg1pOmStG+lNDbPgr5dH3jjEojNTuRgdJF1ydtuQcIQGQkO3IbfzseK721HB2o3sUQ==
+
 jszip@^3.1.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/jszip/-/jszip-3.4.0.tgz#1a69421fa5f0bb9bc222a46bca88182fba075350"
