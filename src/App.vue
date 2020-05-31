@@ -20,12 +20,10 @@
 import Vuex from "vuex";
 import store from "@/store/conversationsStore";
 import FileSystemService from "@/api/FileSystemService";
-
 export default {
   store: store,
   data: () => ({
-    drawer: true,
-    Source: ""
+    drawer: true
   }),
   computed: {
     ...Vuex.mapGetters({
@@ -33,9 +31,24 @@ export default {
       conversations: "conversations"
     })
   },
+  beforeMount() {
+    this.loadPreviousConversations().then(result => {
+      for (let res of result) {
+        let filepath = `${res.filepath}\\messages\\${res.id}\\message.json`;
+
+        FileSystemService.readJsonFile(filepath, conv => {
+          this.openConversation({ conv, filepath: res.filepath }).then(conversation => {
+            console.log(conversation);
+          });
+        });
+      }
+    });
+  },
   methods: {
     ...Vuex.mapActions({
       addConversation: "addConversation",
+      openConversation: "openConversation",
+      loadPreviousConversations: "loadPreviousConversations",
       setConversationIndex: "setConversationIndex"
     }),
     /**
@@ -46,14 +59,12 @@ export default {
      */
     loadConversation() {
       FileSystemService.loadJsonFile((conv, filepath) => {
-        console.log(conv);
         if (conv == null) return;
-        this.addConversation({ conv, filepath });
+        this.addConversation({ conv, filepath }).then(conversation => {
+          console.log(conversation);
+        });
       });
     }
-  },
-  props: {
-    source: String
   }
 };
 </script>

@@ -132,6 +132,15 @@ class DatabaseService {
       from: conversationsTableSchema.name,
     });
   }
+
+  async removeConversation(id) {
+    return await this.connection.remove({
+      from: conversationsTableSchema.name,
+      where: {
+        id: id,
+      },
+    });
+  }
 }
 
 export default DatabaseService;

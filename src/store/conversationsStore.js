@@ -1,6 +1,9 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import Conversation from "@/models/Conversation";
+import DatabaseService from "@/utils/DatabaseService";
+
+let db = new DatabaseService();
 
 Vue.use(Vuex);
 
@@ -36,9 +39,11 @@ const actions = {
     store.commit("SET_INDEX", i);
   },
   removeConversation: (store, id) => {
-    store.commit("REMOVE_CONV", id);
+    return db.removeConversation(id).then(() => {
+      store.commit("REMOVE_CONV", id);
+    });
   },
-  addConversation: (store, { conv, filepath }) => {
+  openConversation: (store, { conv, filepath }) => {
     let conversation = new Conversation({
       title: conv.title,
       filepath,
@@ -46,9 +51,16 @@ const actions = {
       messages: conv.messages,
       participants: conv.participants,
     });
-
     store.commit("ADD_CONV", conversation);
     return conversation;
+  },
+  addConversation: (store, { conv, filepath }) => {
+    return store.dispatch("openConversation", { conv, filepath }).then((conversation) => {
+      return db.insertConversation(conversation);
+    });
+  },
+  loadPreviousConversations: () => {
+    return db.connect().then(() => db.selectConversations());
   },
 };
 
