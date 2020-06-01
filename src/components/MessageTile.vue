@@ -24,7 +24,11 @@
           v-if="message.photos || message.videos"
         >
           <span class="content-photo" v-for="(photo, i) in message.photos" :key="i+'-video'">
-            <v-img :src="getImgPath(photo)" :alt="`${message.sender_name} has sent a photo`" />
+            <v-img
+              :src="getImgPath(photo)"
+              :alt="`${message.sender_name} has sent a photo`"
+              @click="onImageClick(photo.uri)"
+            />
           </span>
           <span class="content-photo" v-for="(video, i) in message.videos" :key="i+'-video'">
             <v-img
@@ -87,6 +91,9 @@ export default {
     getImgPath(photo) {
       if (photo && photo.uri) return photo.uri;
       return "";
+    },
+    onImageClick(image) {
+      this.$emit("photoClick", image);
     },
     hasAvatar() {
       return this.avatarSrc != "" || this.isSenderMe();

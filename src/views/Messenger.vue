@@ -74,8 +74,14 @@
               :avatarSrc="getAvatar(message.sender_name)"
               :key="'message-' + i"
               :message="message"
+              @photoClick="showImageInViewer"
             ></message-tile>
           </perfect-scrollbar>
+
+          <photo-viewer-dialog
+            :image="viewerImage"
+            v-model="Dialogs.showPhotoViewer"
+          ></photo-viewer-dialog>
         </v-container>
       </v-col>
       <!-- Informations Bar -->
@@ -177,6 +183,7 @@ import ConversationTile from "@/components/ConversationTile";
 import MessageTile from "@/components/MessageTile";
 import MessengerSearchBar from "@/components/MessengerSearchBar";
 import PhotoGalleryDialog from "@/components/PhotoGalleryDialog";
+import PhotoViewerDialog from "@/components/PhotoViewerDialog";
 import store from "@/store/conversationsStore";
 import Vuex from "vuex";
 
@@ -184,6 +191,7 @@ export default {
   store,
   components: {
     PhotoGalleryDialog,
+    PhotoViewerDialog,
     ConversationTile,
     MessageTile,
     MessengerSearchBar
@@ -198,12 +206,14 @@ export default {
       foundIndexes: []
     },
     Dialogs: {
-      showPhotoGallery: false
+      showPhotoGallery: false,
+      showPhotoViewer: false
     },
     Panels: {
       searchPanel: 0,
       editPanel: 0
     },
+    viewerImage: "",
     messageStartIndex: 0,
     messagesCount: 30,
     shownConversation: {
@@ -286,6 +296,10 @@ export default {
       } else {
         return null;
       }
+    },
+    showImageInViewer(img) {
+      this.Dialogs.showPhotoViewer = true;
+      this.viewerImage = img
     },
     imageClick(i) {
       this.Dialogs.showPhotoGallery = false;
