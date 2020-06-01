@@ -18,9 +18,20 @@
           <span class="content-text">{{message.content}}</span>
         </v-row>
         <!-- Message Photos ///TODO Add stickers -->
-        <v-row class="content" :justify="right? 'end': 'start'" v-if="message.photos">
-          <span class="content-photo" v-for="(photo, i) in message.photos" :key="i">
+        <v-row
+          class="content"
+          :justify="right? 'end': 'start'"
+          v-if="message.photos || message.videos"
+        >
+          <span class="content-photo" v-for="(photo, i) in message.photos" :key="i+'-video'">
             <v-img :src="getImgPath(photo)" :alt="`${message.sender_name} has sent a photo`" />
+          </span>
+          <span class="content-photo" v-for="(video, i) in message.videos" :key="i+'-video'">
+            <v-img
+              v-if="video"
+              :src="getImgPath(video.thumbnail)"
+              :alt="`${message.sender_name} has sent a video`"
+            />
           </span>
         </v-row>
         <!-- Message Timestamp -->

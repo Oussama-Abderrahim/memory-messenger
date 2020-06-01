@@ -69,6 +69,7 @@ class Conversation {
   get photos() {
     if (!this.conversationPhotos) {
       this.conversationPhotos = [];
+
       this.messages.forEach((message, i) => {
         if (message.photos) {
           for (let photo of message.photos) {
@@ -76,6 +77,18 @@ class Conversation {
               this.conversationPhotos.push({
                 index: i,
                 src: photo.uri,
+              });
+            }
+          }
+        }
+
+        if (message.videos) {
+          for (let video of message.videos) {
+            if (video) {
+              this.conversationPhotos.push({
+                isVideo: true,
+                index: i,
+                src: video.thumbnail.uri,
               });
             }
           }
