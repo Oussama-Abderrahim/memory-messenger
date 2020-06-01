@@ -13,7 +13,7 @@ Design inspired from [Ashfak Ahmed Sayem](https://dribbble.com/shots/6304417-Cus
 - [ ] **Design** : Add a light mode
 - [x] **Conversations** : Load a conversation from Facebook json files
 - [x] **Conversations** : Load multiple conversations and switch between them
-- [ ] **Conversations** : Save last open conversations on app close
+- [X] **Conversations** : Save last open conversations on app close
 - [ ] **Conversations** : Edit conversation's metadata (title and avatar)
 - [ ] **Conversations** : Save and load Bookmarked messages in a conversation 
 - [x] **Participants** : Show Participant Avatars from json or load a default one

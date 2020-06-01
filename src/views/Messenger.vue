@@ -219,7 +219,7 @@ export default {
   },
   watch: {
     currentConversation(newVal, oldVal) {
-      if (newVal != oldVal) this.resetStartIndex(0);
+      if (newVal != oldVal) this.closeSearchBar();
     }
   },
   methods: {
