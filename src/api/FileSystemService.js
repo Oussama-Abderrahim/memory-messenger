@@ -21,6 +21,7 @@ class FileSystemService {
    */
   loadJsonFile(cb) {
     this._readFileFromChooser((data, filepath) => {
+      filepath = filepath.replace(/^(.*?)message\.json$/, "$1");
       cb(JSON.parse(data), filepath);
     });
   }
@@ -30,9 +31,8 @@ class FileSystemService {
    * @param {FileSystemService~ReadFileCb} cb Callback that takes two Params:
    */
   readJsonFile(filepath, cb) {
-    console.log(filepath);
     fs.readFile(filepath, "utf8", (err, data) => {
-      cb(JSON.parse(data), filepath);
+      cb(JSON.parse(data), filepath.replace(/^(.*?)message\.json$/, "$1"));
     });
   }
 
@@ -57,9 +57,10 @@ class FileSystemService {
           cb(null);
         }
         /// TODO : extract path correctly
-        let pathRegex = /(.)*\\messages\\/i;
-        filepath = filepath.match(pathRegex)[0];
-        filepath = filepath.slice(0, -9); // 9 is "messages/".length, since URIs start with 'messages/'
+        // filepath = filepath.replace(/^.*?message\.json$/)
+        // let pathRegex = /(.)*\\messages\\/i;
+        // filepath = filepath.match(pathRegex)[0];
+        // filepath = filepath.slice(0, -9); // 9 is "messages/".length, since
         cb(data, filepath);
       });
     });

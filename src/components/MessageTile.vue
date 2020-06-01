@@ -45,8 +45,7 @@ export default {
     message: {
       type: Message,
       default: () => new Message()
-    },
-    filepath: { type: String, default: "/" }
+    }
   },
   data: () => ({
     DEFAULT: {
@@ -64,14 +63,6 @@ export default {
     isSenderMe() {
       return this.message.sender_name == "Oussama Abderrahim"; ///TODO: make this configurable
     },
-    $getSenderNameHTML(sender_name, timestamp) {
-      return (
-        (sender_name || this.DEFAULT.SENDER_NAME) +
-        ` <span class="grey--text text--lighten-1 caption">${this.$getFormattedDate(
-          timestamp
-        )}</span>`
-      );
-    },
     /**
      * @param timestamp in miliseconds
      * @return {String} date string in own format
@@ -83,7 +74,7 @@ export default {
      *
      */
     getImgPath(photo) {
-      if (photo && photo.uri) return this.filepath + photo.uri;
+      if (photo && photo.uri) return photo.uri;
       return "";
     },
     hasAvatar() {

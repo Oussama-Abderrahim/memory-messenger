@@ -34,10 +34,10 @@ export default {
   beforeMount() {
     this.loadPreviousConversations().then(result => {
       for (let res of result) {
-        let filepath = `${res.filepath}\\messages\\${res.id}\\message.json`;
+        let filepath = `${res.filepath}\\message.json`;
 
-        FileSystemService.readJsonFile(filepath, conv => {
-          this.openConversation({ conv, filepath: res.filepath }).then(conversation => {
+        FileSystemService.readJsonFile(filepath, (conv, filepath) => {
+          this.openConversation({ conv, filepath }).then(conversation => {
             console.log(conversation);
           });
         });

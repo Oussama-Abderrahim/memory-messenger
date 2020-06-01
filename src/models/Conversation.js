@@ -73,7 +73,7 @@ class Conversation {
           if (message.photos) {
             return {
               index: i,
-              src: this.filepath + message.photos[0].uri,
+              src: message.photos[0].uri,
             };
           }
           return null;
@@ -102,9 +102,9 @@ class Conversation {
     for (let message of reversedMsg) {
       // if same sender_name, just concat
       if (prevMsg && message.sender_name == prevMsg.sender_name) {
-        prevMsg.concatMessage(message);
+        prevMsg.concatMessage(message, this.filepath);
       } else {
-        const newMessage = new Message(message);
+        const newMessage = new Message(message, this.filepath);
         this.addMessage(newMessage);
         prevMsg = newMessage;
       }

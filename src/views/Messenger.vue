@@ -71,7 +71,6 @@
           >
             <message-tile
               v-for="(message, i) in shownConversation.messages"
-              :filepath="currentConversation.filepath"
               :avatarSrc="getAvatar(message.sender_name)"
               :key="'message-' + i"
               :message="message"
