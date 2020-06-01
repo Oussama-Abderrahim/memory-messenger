@@ -68,17 +68,19 @@ class Conversation {
    */
   get photos() {
     if (!this.conversationPhotos) {
-      this.conversationPhotos = this.messages
-        .map((message, i) => {
-          if (message.photos) {
-            return {
-              index: i,
-              src: message.photos[0].uri,
-            };
+      this.conversationPhotos = [];
+      this.messages.forEach((message, i) => {
+        if (message.photos) {
+          for (let photo of message.photos) {
+            if (photo) {
+              this.conversationPhotos.push({
+                index: i,
+                src: photo.uri,
+              });
+            }
           }
-          return null;
-        })
-        .filter((m) => m != null);
+        }
+      });
     }
 
     return this.conversationPhotos;
