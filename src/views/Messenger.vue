@@ -79,7 +79,8 @@
           </perfect-scrollbar>
 
           <photo-viewer-dialog
-            :image="viewerImage"
+            :imageIndex="viewerImageIndex"
+            :images="currentConversation.photos"
             v-model="Dialogs.showPhotoViewer"
           ></photo-viewer-dialog>
         </v-container>
@@ -213,7 +214,7 @@ export default {
       searchPanel: 0,
       editPanel: 0
     },
-    viewerImage: "",
+    viewerImageIndex: 0,
     messageStartIndex: 0,
     messagesCount: 30,
     shownConversation: {
@@ -299,7 +300,12 @@ export default {
     },
     showImageInViewer(img) {
       this.Dialogs.showPhotoViewer = true;
-      this.viewerImage = img
+
+      let index = this.currentConversation.photos
+        .map((p, i) => ({ index: i, src: p.src }))
+        .filter(p => p.src == img)[0].index;
+
+      this.viewerImageIndex = index;
     },
     imageClick(i) {
       this.Dialogs.showPhotoGallery = false;

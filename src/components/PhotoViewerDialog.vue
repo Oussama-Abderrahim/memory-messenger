@@ -1,18 +1,25 @@
 <template>
   <v-dialog v-model="showDialog" width="600">
-    <v-card class="photo-viewer">
-      <v-container fluid>
-        <v-card flat tile class="d-flex">
-          <v-img :src="src" aspect-ratio="1" class="grey lighten-2 image">
+    <v-carousel
+      v-model="index"
+      @change="updateIndex"
+      class="photo-viewer"
+      hide-delimiters
+      hide-delimiter-background
+      show-arrows-on-hover
+    >
+      <v-carousel-item v-for="(image, i) in images" :key="i">
+        <v-sheet height="100%">
+          <v-img :src="image.src" continuous contain aspect-ratio="1" class="image">
             <template v-slot:placeholder>
               <v-row class="fill-height ma-0" align="center" justify="center">
                 <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
               </v-row>
             </template>
           </v-img>
-        </v-card>
-      </v-container>
-    </v-card>
+        </v-sheet>
+      </v-carousel-item>
+    </v-carousel>
   </v-dialog>
 </template>
 
@@ -23,35 +30,45 @@ export default {
       type: Boolean,
       required: true
     },
-    image: {
-      type: String,
-      default: () => ("")
+    imageIndex: {
+      type: Number,
+      default: -1
+    },
+    images: {
+      type: Array,
+      default: () => []
     }
   },
   data: () => ({
     showDialog: false,
-    src: ""
+    src: "",
+    index: 0
   }),
   watch: {
     value() {
       this.showDialog = this.value;
     },
 
-    image() {
-      this.src = this.image;
+    imageIndex() {
+      // this.src = this.images[this.imageIndex];
+      this.index = this.imageIndex;
     },
 
     showDialog() {
       this.$emit("input", this.showDialog);
     }
   },
-  methods: {}
+  methods: {
+    updateIndex(arg) {
+      console.log("update", arg);
+    }
+  }
 };
 </script>
 
 <style lang='scss' scoped>
-.image:hover {
-  border: 2px solid grey;
+.image {
+  height: 100%;
 }
 .photo-viewer {
 }
