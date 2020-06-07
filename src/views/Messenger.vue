@@ -19,20 +19,22 @@
                 <v-col cols="12">Conversations list</v-col>
               </v-row>
               <!-- Conversations Lists -->
-              <perfect-scrollbar
-                :options="{scrollingThreshold: 300}"
+              <infinite-scroll-container
                 class="messenger-conversations-list"
+                :items="conversations"
               >
-                <!-- Single Card -->
-                <conversation-tile
-                  @click="setConversationIndex(i);"
-                  @close="removeConversation(item.id)"
-                  v-for="(item,i) in conversations"
-                  :active="item == currentConversation"
-                  :item="item"
-                  :key="'conversation-'+i"
-                />
-              </perfect-scrollbar>
+                <template v-slot="{items: conversations}">
+                  <conversation-tile
+                    @click="setConversationIndex(i);"
+                    @close="removeConversation(item.id)"
+                    v-for="(item,i) in conversations"
+                    :active="item == currentConversation"
+                    :item="item"
+                    :key="'conversation-'+i"
+                  />
+                </template>
+              </infinite-scroll-container>
+
               <v-spacer></v-spacer>
             </v-col>
           </v-row>
@@ -63,6 +65,21 @@
         </v-toolbar>
         <v-container fill-height>
           <!-- Messages -->
+          <!-- <infinite-scroll-container
+            class="fill-height"
+            ref="messengerScrollbar"
+            :items="currentConversation.messages"
+          >
+            <template v-slot="{items}">
+              <message-tile
+                v-for="(message, i) in items"
+                :avatarSrc="getAvatar(message.sender_name)"
+                :key="'message-' + i"
+                :message="message"
+                @photoClick="showImageInViewer"
+              ></message-tile>
+            </template>
+          </infinite-scroll-container>-->
           <perfect-scrollbar
             ref="messengerScrollbar"
             @ps-y-reach-end="loadMoreMessages"
@@ -183,6 +200,7 @@
 import ConversationTile from "@/components/ConversationTile";
 import MessageTile from "@/components/MessageTile";
 import MessengerSearchBar from "@/components/MessengerSearchBar";
+import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
 import PhotoGalleryDialog from "@/components/PhotoGalleryDialog";
 import PhotoViewerDialog from "@/components/PhotoViewerDialog";
 import store from "@/store/conversationsStore";
@@ -192,6 +210,7 @@ export default {
   store,
   components: {
     PhotoGalleryDialog,
+    InfiniteScrollContainer,
     PhotoViewerDialog,
     ConversationTile,
     MessageTile,
