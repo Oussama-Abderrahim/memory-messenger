@@ -7,7 +7,10 @@
 </template>
 
 <script>
+import { PerfectScrollbar } from "vue2-perfect-scrollbar";
+
 export default {
+  components: { PerfectScrollbar },
   props: {
     items: {
       type: Array,
@@ -59,6 +62,7 @@ export default {
   }
 };
 </script>
+<style src="vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css"/>
 
 <style scoped>
 /* .ps {

@@ -65,9 +65,10 @@
         </v-toolbar>
         <v-container fill-height>
           <!-- Messages -->
-          <!-- <infinite-scroll-container
+          <infinite-scroll-container
             class="fill-height"
             ref="messengerScrollbar"
+            :startIndex="messageStartIndex"
             :items="currentConversation.messages"
           >
             <template v-slot="{items}">
@@ -79,21 +80,7 @@
                 @photoClick="showImageInViewer"
               ></message-tile>
             </template>
-          </infinite-scroll-container>-->
-          <perfect-scrollbar
-            ref="messengerScrollbar"
-            @ps-y-reach-end="loadMoreMessages"
-            class="fill-height"
-            v-if="shownConversation.messages.length"
-          >
-            <message-tile
-              v-for="(message, i) in shownConversation.messages"
-              :avatarSrc="getAvatar(message.sender_name)"
-              :key="'message-' + i"
-              :message="message"
-              @photoClick="showImageInViewer"
-            ></message-tile>
-          </perfect-scrollbar>
+          </infinite-scroll-container>
 
           <photo-viewer-dialog
             :imageIndex="viewerImageIndex"
@@ -235,10 +222,6 @@ export default {
     },
     viewerImageIndex: 0,
     messageStartIndex: 0,
-    messagesCount: 30,
-    shownConversation: {
-      messages: []
-    },
     activeConversation: -1
   }),
   computed: {
@@ -270,39 +253,6 @@ export default {
     scrollMessagesToTop() {
       if (this.$refs.messengerScrollbar)
         this.$refs.messengerScrollbar.$el.scrollTop = 0;
-    },
-    /**
-     *
-     */
-    refreshShownMessages() {
-      this.$set(
-        this.shownConversation,
-        "messages",
-        this.currentConversation.messages.slice(
-          this.messageStartIndex,
-          this.messageStartIndex + this.messagesCount
-        )
-      );
-    },
-    /**
-     *
-     */
-    loadMoreMessages() {
-      console.log("load more messages");
-      const LOAD_STEP = 10; // how many message to load each time
-      let lastMessageIndex = this.messageStartIndex + this.messagesCount;
-      if (lastMessageIndex >= this.currentConversation.messages.length) return;
-
-      let newMessages = this.currentConversation.messages.slice(
-        lastMessageIndex,
-        lastMessageIndex + LOAD_STEP
-      );
-      this.$set(
-        this.shownConversation,
-        "messages",
-        this.shownConversation.messages.concat(newMessages)
-      );
-      this.messagesCount += LOAD_STEP;
     },
     /**
      * Get Avatar url from participants object
@@ -353,9 +303,7 @@ export default {
      *
      */
     resetStartIndex(startIndex = 0) {
-      this.messagesCount = 30;
       this.messageStartIndex = startIndex;
-      this.refreshShownMessages();
       this.$nextTick(() => {
         this.scrollMessagesToTop();
       });
@@ -382,7 +330,7 @@ export default {
       if (this.currentConversation.messages) this.resetStartIndex(0);
     },
     /**
-     * Increment the search index and refreshshownMessages
+     * Increment the search index
      */
     nextSearchResult() {
       if (this.Search.foundIndexes.length == 0) return;
@@ -395,7 +343,7 @@ export default {
       this.resetStartIndex(this.messageStartIndex);
     },
     /**
-     * Decrement the search index and refreshShownMessages
+     * Decrement the search index 
      */
     prevSearchResult() {
       if (this.Search.foundIndexes.length == 0) return;
