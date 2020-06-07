@@ -83,8 +83,7 @@
           </infinite-scroll-container>
 
           <photo-viewer-dialog
-            :imageIndex="viewerImageIndex"
-            :images="currentConversation.photos"
+            :image="viewerImage"
             v-model="Dialogs.showPhotoViewer"
           ></photo-viewer-dialog>
         </v-container>
@@ -220,7 +219,7 @@ export default {
       searchPanel: 0,
       editPanel: 0
     },
-    viewerImageIndex: 0,
+    viewerImage: "",
     messageStartIndex: 0,
     activeConversation: -1
   }),
@@ -269,12 +268,7 @@ export default {
     },
     showImageInViewer(img) {
       this.Dialogs.showPhotoViewer = true;
-
-      let index = this.currentConversation.photos
-        .map((p, i) => ({ index: i, src: p.src }))
-        .filter(p => p.src == img)[0].index;
-
-      this.viewerImageIndex = index;
+      this.viewerImage = img;
     },
     imageClick(i) {
       this.Dialogs.showPhotoGallery = false;
