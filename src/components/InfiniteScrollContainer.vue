@@ -12,6 +12,10 @@ export default {
     items: {
       type: Array,
       default: () => []
+    },
+    startIndex: {
+      type: Number,
+      default: () => 0
     }
   },
   data: () => ({
@@ -29,6 +33,12 @@ export default {
           this.showMoreItems();
         });
       }
+    },
+    startIndex() {
+      this.itemsCount = 0;
+      this.$nextTick(() => {
+        this.showMoreItems();
+      });
     }
   },
   mounted() {
@@ -40,7 +50,10 @@ export default {
   methods: {
     showMoreItems() {
       if (this.itemsCount >= this.items.length) return;
-      this.shownItems = this.items.slice(0, this.itemsCount + 10);
+      this.shownItems = this.items.slice(
+        this.startIndex,
+        this.startIndex + this.itemsCount + 10
+      );
       this.itemsCount = this.shownItems.length;
     }
   }
